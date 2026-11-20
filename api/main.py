@@ -20,7 +20,7 @@ from fastapi.responses import StreamingResponse  # noqa: E402
 import engine  # noqa: E402
 import state  # noqa: E402
 from adapters import (  # noqa: E402
-    airbyte, analytics, arcee, cognee, firedrill, persona, senso, singlestore, superlinked,
+    airbyte, analytics, arcee, cognee, elevenlabs, firedrill, persona, senso, singlestore, superlinked,
 )
 from adapters.base import current_trace, start_trace  # noqa: E402
 from models import (  # noqa: E402
@@ -84,7 +84,9 @@ async def events(request: Request) -> StreamingResponse:
 
 def sponsor_status() -> dict[str, str]:
     return {
-        "arcee": arcee.status(),
+        "llm": arcee.status(),
+        "arcee": arcee.arcee_status(),
+        "elevenlabs": elevenlabs.status(),
         "cognee": cognee.status(),
         "senso": senso.status(),
         "airbyte": airbyte.status(),
@@ -100,6 +102,21 @@ def sponsor_status() -> dict[str, str]:
 @app.get("/api/health")
 async def health() -> dict:
     return {"ok": True, "sponsors": sponsor_status()}
+
+
+@app.get("/api/tts")
+async def tts(text: str, who: str = "milo") -> StreamingResponse:
+    """Stream ElevenLabs speech. 503 → the browser uses its own voice instead."""
+    text = (text or "").strip()[:800]
+    if not text or elevenlabs.status() != "live":
+        raise HTTPException(503, "tts unavailable")
+    try:
+        client, resp = await elevenlabs.open_stream(text, "user" if who == "user" else "milo")
+    except Exception as e:  # noqa: BLE001
+        logging.getLogger("milo.tts").warning("tts failed: %r", e)
+        raise HTTPException(503, "tts unavailable") from e
+    return StreamingResponse(elevenlabs.iter_audio(client, resp), media_type="audio/mpeg",
+                             headers={"Cache-Control": "no-store"})
 
 
 @app.post("/api/demo/reset")
@@ -132,11 +149,25 @@ async def route(body: RouteRequest) -> dict:
 async def run_tool(tool: str, args: dict, confirmed: bool) -> dict:
     if tool == "fit_check":
         catalog = await senso.get_catalog()
-        out = fit_check.run(catalog, state.get_profile(), args.get("item") or args.get("item_id"))
+        profile = state.get_profile()
+        out = fit_check.run(catalog, profile, args.get("item") or args.get("item_id"))
         if out["result"] and "items" in out["result"]:
+            home = profile.get("home", {})
             out["result"]["items"] = await superlinked.rank(
                 "chairs", out["result"]["items"],
-                key=lambda r: (not r["fits"], -r["score"] if not r["fits"] else 0, r["chair"]["priceUsd"]))
+                key=lambda r: (not r["fits"], -r["score"] if not r["fits"] else 0, r["chair"]["priceUsd"]),
+                query=(f"Wheelchair for someone who can self-propel only about {profile.get('canSelfPropelFt')} ft, "
+                       f"hip width {profile.get('hipWidthIn')} in, transfer height "
+                       f"{profile.get('transferHeightRangeIn')} in, home doorway "
+                       f"{home.get('narrowestDoorwayIn')} in, hallway turn space {home.get('hallwayTurnSpaceIn')} in."),
+                text=lambda r: (f"{r['chair']['name']}: {r['chair']['type']} chair, overall width "
+                                f"{r['chair']['overallWidthIn']} in, seat width {r['chair']['seatWidthIn']} in, "
+                                f"seat-to-floor {r['chair']['seatToFloorIn']} in, turning radius "
+                                f"{r['chair'].get('turningRadiusIn')} in, ${r['chair']['priceUsd']}. {r['one_liner']}"),
+                # Hard rules first: fitting chairs always above non-fitting ones.
+                group=lambda r: (not r["fits"], -r["score"] if not r["fits"] else 0),
+                instruction="Rank wheelchairs by how well they suit this person's body, strength and home.",
+            )
         return out
     if tool == "coverage":
         return await coverage.run()

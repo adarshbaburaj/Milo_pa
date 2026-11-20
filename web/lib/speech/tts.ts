@@ -1,6 +1,13 @@
 "use client";
 import { milo, useMiloStore } from "@/components/milo/useMilo";
 import { useApp } from "@/lib/store";
+import { API_URL } from "@/lib/api";
+
+/** Who is talking: "user" = Milo speaking FOR the person (AAC), "milo" = Milo's own voice. */
+export type Who = "user" | "milo";
+
+let audio: HTMLAudioElement | null = null;
+let elevenDown = false; // after a failure, skip ElevenLabs for a while
 
 let voice: SpeechSynthesisVoice | null = null;
 
@@ -26,14 +33,73 @@ export function ttsAvailable() {
 }
 
 export function stopSpeaking() {
+  if (audio) {
+    audio.pause();
+    audio = null;
+  }
   if (!ttsAvailable()) return;
   window.speechSynthesis.cancel();
   milo.set("speaking", false);
   useMiloStore.getState().setMouth(false);
 }
 
-/** Speak text; Milo's mouth moves on word boundaries. Resolves when finished. */
-export function speak(text: string, opts: { rate?: number; volume?: number } = {}): Promise<void> {
+type SpeakOpts = { rate?: number; volume?: number; who?: Who };
+
+/**
+ * Human voice via ElevenLabs (streamed from our API). Resolves true once playback finished,
+ * false if it never started — the caller then uses the browser voice.
+ */
+function speakEleven(text: string, opts: SpeakOpts): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || elevenDown) return resolve(false);
+    if (audio) audio.pause();
+    if (ttsAvailable()) window.speechSynthesis.cancel();
+    const a = new Audio(`${API_URL}/api/tts?who=${opts.who ?? "milo"}&text=${encodeURIComponent(text)}`);
+    audio = a;
+    a.volume = opts.volume ?? 1;
+    a.playbackRate = opts.rate ?? useApp.getState().settings.voiceRate ?? 1;
+    const mouth = useMiloStore.getState().setMouth;
+    let started = false;
+    let flap: ReturnType<typeof setInterval> | null = null;
+    const finish = (ok: boolean) => {
+      clearTimeout(startTimer);
+      if (flap) clearInterval(flap);
+      mouth(false);
+      milo.set("speaking", false);
+      if (audio === a) audio = null;
+      resolve(ok);
+    };
+    const fail = () => {
+      if (started) return finish(true); // played partly; don't repeat it in another voice
+      elevenDown = true;
+      setTimeout(() => (elevenDown = false), 60_000);
+      a.pause();
+      finish(false);
+    };
+    const startTimer = setTimeout(fail, 4000);
+    a.onplaying = () => {
+      if (started) return;
+      started = true;
+      clearTimeout(startTimer);
+      milo.set("speaking", true);
+      flap = setInterval(() => mouth(!useMiloStore.getState().mouthOpen), 160);
+    };
+    a.onended = () => finish(true);
+    a.onpause = () => started && finish(true); // stopSpeaking()
+    a.onerror = fail;
+    a.play().catch(fail);
+  });
+}
+
+/** Speak text in a human voice (ElevenLabs), falling back to the browser voice. Resolves when finished. */
+export async function speak(text: string, opts: SpeakOpts = {}): Promise<void> {
+  if (!text) return;
+  if (await speakEleven(text, opts)) return;
+  return speakBrowser(text, opts);
+}
+
+/** Browser voice; Milo's mouth moves on word boundaries. Resolves when finished. */
+function speakBrowser(text: string, opts: SpeakOpts = {}): Promise<void> {
   return new Promise((resolve) => {
     if (!ttsAvailable() || !text) return resolve();
     window.speechSynthesis.cancel();

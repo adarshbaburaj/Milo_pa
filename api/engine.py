@@ -243,26 +243,32 @@ async def predict(letters: str, strategy: str = "context") -> dict:
         return {"suggestions": local, "model": None, "latencyMs": 0, "source": "local"}
 
     ctx = _context()
+    freq = "; ".join(f"{p['text']} ({p['count']}, {p['usual_time']})" for p in ctx["frequent_phrases"]) if strategy == "context" else ""
+    recent = " / ".join(t.get("user") or "" for t in ctx["recent_turns"])
     user = (
-        f'letters: "{" ".join(t.upper() for t in tokens)}"\n'
-        f'time: "{ctx["time"]}"\n'
-        f"recent_turns: {json.dumps(ctx['recent_turns'])}\n"
-        f"open_tasks: {json.dumps(ctx['open_tasks'])}\n"
-        f"frequent_phrases: {json.dumps(ctx['frequent_phrases'] if strategy == 'context' else [])}"
+        f"letters: {' '.join(t.upper() for t in tokens)}\n"
+        f"time: {ctx['time']}\n"
+        f"open tasks: {'; '.join(ctx['open_tasks'])}\n"
+        f"recent: {recent}\n"
+        f"frequent: {freq}"
     )
     res = await arcee.complete("small", [{"role": "system", "content": prompt("predict")},
-                                         {"role": "user", "content": user}])
-    if res and isinstance(res["content"], dict):
+                                         {"role": "user", "content": user}], json_mode=False, max_tokens=100)
+    if res and isinstance(res["content"], str):
         llm = []
-        for s in res["content"].get("suggestions", [])[:6]:
-            try:
-                text = str(s["text"]).strip()
-                tool = s.get("tool") if s.get("tool") in TOOLS else None
-                kind = "task" if s.get("kind") == "task" and tool else "say"
-                llm.append({"text": text, "kind": kind, "tool": tool,
-                            "confidence": round(float(s.get("confidence", 0.5)), 2)})
-            except (KeyError, TypeError, ValueError):
+        for line in res["content"].splitlines():
+            parts = [x.strip() for x in line.strip().strip("-*0123456789. ").split("|")]
+            if len(parts) < 2 or not parts[0]:
                 continue
+            tool = parts[1] if parts[1] in TOOLS else None
+            try:
+                conf = float(parts[2]) if len(parts) > 2 else 0.5
+            except ValueError:
+                conf = 0.5
+            llm.append({"text": parts[0].strip('"'), "kind": "task" if tool else "say", "tool": tool,
+                        "confidence": round(max(0.0, min(1.0, conf)), 2)})
+        # keep only model suggestions consistent with the letters
+        llm = [x for x in llm if score_phrase(tokens, x["text"]) > 0]
         if llm:
             merged = _merge(local, llm)
             return {"suggestions": merged, "model": res["model"],
