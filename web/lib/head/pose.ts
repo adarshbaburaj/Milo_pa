@@ -2,7 +2,7 @@
 type Matrix = { rows: number; columns: number; data: number[] };
 type LM = { x: number; y: number; z: number };
 
-export type Pose = { yaw: number; pitch: number; source: "matrix" | "landmarks" };
+export type Pose = { yaw: number; pitch: number; source: "matrix" | "landmarks" | "nose" };
 
 export function poseFromMatrix(m: Matrix | undefined): Pose | null {
   if (!m || !m.data || m.data.length < 16) return null;
@@ -26,4 +26,11 @@ export function poseFromLandmarks(lm: LM[] | undefined): Pose | null {
   const pitch = (nose.y - top.y) / (chin.y - top.y) - 0.5;
   if (!isFinite(yaw) || !isFinite(pitch)) return null;
   return { yaw, pitch, source: "landmarks" };
+}
+
+/** Nose pointer: the nose tip's position in the (mirrored) camera frame. Moving the nose moves the cursor. */
+export function poseFromNose(lm: LM[] | undefined): Pose | null {
+  if (!lm || lm.length < 2) return null;
+  const n = lm[1];
+  return { yaw: 1 - n.x, pitch: n.y, source: "nose" };
 }

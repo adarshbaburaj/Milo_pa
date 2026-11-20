@@ -112,7 +112,7 @@ export function Calibrate({ onDone, onCancel }: { onDone: () => void; onCancel?:
         <div className="flex h-full flex-col items-center justify-center gap-6 px-6 text-center">
           <Milo size={96} />
           <h2 className="text-[32px] font-semibold">Let’s calibrate head mode</h2>
-          <p className="max-w-md text-muted">Sit comfortably. I’ll ask you to look at me in the middle, then follow me to each corner. Video stays on this device.</p>
+          <p className="max-w-md text-muted">Sit comfortably. Milo follows your nose. Look at me in the middle, then point your nose at me in each corner. Video stays on this device.</p>
           <div className="flex gap-3">
             {onCancel && <Button variant="ghost" onClick={onCancel}>Not now</Button>}
             <Button variant="primary" onClick={begin}>Start camera</Button>
@@ -138,7 +138,7 @@ export function Calibrate({ onDone, onCancel }: { onDone: () => void; onCancel?:
       )}
       {step === "corners" && (
         <>
-          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl">Now turn gently to look at Milo.</p>
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl">Point your nose at Milo — move your head gently.</p>
           <motion.div
             className="absolute"
             animate={{ left: `calc(${c.x * 100}% - 48px)`, top: `calc(${c.y * 100}% - 48px)` }}

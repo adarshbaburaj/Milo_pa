@@ -27,7 +27,7 @@ export function HeadBoard() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loadCalibration()) {
+    if (loadCalibration()?.source !== faceTracker.pointer.replace("pose", "matrix")) {
       setNeedsCal(true);
       return;
     }
@@ -87,14 +87,14 @@ export function HeadBoard() {
     <>
       <div className="no-print fixed right-4 top-14 z-[55] flex flex-col items-end gap-1">
         <SelfView />
-        <span className="text-xs text-muted">Video stays on this device</span>
+        <span className="rounded-full bg-surface px-2 text-xs text-muted">🔒 Video stays on this device · your nose is the pointer</span>
       </div>
       <motion.section
         aria-label="Head mode letter board"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: faceOk ? 1 : 0.5 }}
         transition={{ duration: 0.22, ease: EASE }}
-        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col border-t border-border bg-bg px-6 pb-4 pt-3 shadow-soft"
+        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-[32px] border-t-2 border-border bg-bg px-6 pb-4 pt-4 shadow-lift"
         style={{ height: "max(60vh, 720px)", maxHeight: "calc(100vh - 40px)" }}
       >
         {/* composer */}
@@ -103,7 +103,7 @@ export function HeadBoard() {
           <div className="flex min-h-[48px] flex-1 items-center gap-2" aria-live="polite" aria-label="Chosen letters">
             {composer.length ? (
               composer.map((l, i) => (
-                <span key={i} className="rounded bg-surface px-3 py-1 font-mono text-2xl font-semibold">
+                <span key={i} className="rounded-full bg-accent px-4 py-1 font-mono text-2xl font-semibold text-white">
                   {l.replace(/_/g, " ␣ ")}
                 </span>
               ))
@@ -131,7 +131,7 @@ export function HeadBoard() {
           {suggestions.length ? (
             <Suggestions mode="head" compact />
           ) : (
-            <div className="flex h-[96px] items-center justify-center rounded-lg border border-dashed border-border text-muted">
+            <div className="flex h-[96px] items-center justify-center rounded-lg border-2 border-dashed border-border text-lg text-muted">
               Pick a letter — suggestions appear here
             </div>
           )}

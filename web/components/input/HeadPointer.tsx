@@ -137,9 +137,13 @@ export function HeadPointer({
   );
 }
 
-/** Small mirrored self-view (120×90) with a face outline. */
-export function SelfView({ className = "" }: { className?: string }) {
+/**
+ * Mirrored self-view with a live overlay: face-mesh dots, the nose tip (the pointer),
+ * and a 6×5 grid showing which cell of the board the nose is pointing at.
+ */
+export function SelfView({ className = "", width = 240, height = 180 }: { className?: string; width?: number; height?: number }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     let alive = true;
     const attach = () => {
@@ -151,16 +155,51 @@ export function SelfView({ className = "" }: { className?: string }) {
       if (alive && !src) setTimeout(attach, 300);
     };
     attach();
+    const unsub = faceTracker?.subscribe((f) => {
+      const c = canvas.current;
+      if (!c) return;
+      const g = c.getContext("2d")!;
+      const W = c.width, H = c.height;
+      g.clearRect(0, 0, W, H);
+      // grid matrix (6 × 5, like the letter board)
+      g.strokeStyle = "rgba(255,255,255,.35)";
+      g.lineWidth = 1;
+      for (let i = 1; i < 6; i++) { g.beginPath(); g.moveTo((i * W) / 6, 0); g.lineTo((i * W) / 6, H); g.stroke(); }
+      for (let j = 1; j < 5; j++) { g.beginPath(); g.moveTo(0, (j * H) / 5); g.lineTo(W, (j * H) / 5); g.stroke(); }
+      if (!f.face || !f.landmarks) return;
+      // highlighted cell = where the cursor is on screen
+      const cx = Math.max(0, Math.min(5, Math.floor(f.nx * 6)));
+      const cy = Math.max(0, Math.min(4, Math.floor(f.ny * 5)));
+      g.fillStyle = "rgba(194,65,12,.28)";
+      g.fillRect((cx * W) / 6, (cy * H) / 5, W / 6, H / 5);
+      // face mesh (sparse)
+      g.fillStyle = "rgba(255,255,255,.75)";
+      for (let i = 0; i < f.landmarks.length; i += 6) {
+        const p = f.landmarks[i];
+        g.fillRect((1 - p.x) * W - 1, p.y * H - 1, 2, 2);
+      }
+      // nose tip = pointer
+      const n = f.landmarks[1];
+      const nx = (1 - n.x) * W, ny = n.y * H;
+      g.fillStyle = "#c2410c";
+      g.strokeStyle = "#fff";
+      g.lineWidth = 2;
+      g.beginPath(); g.arc(nx, ny, 6, 0, Math.PI * 2); g.fill(); g.stroke();
+    });
     return () => {
       alive = false;
+      unsub?.();
     };
   }, []);
   return (
-    <div className={`relative h-[90px] w-[120px] overflow-hidden rounded bg-surface ${className}`} aria-label="Camera self-view (stays on this device)" role="img">
-      <video ref={ref} muted playsInline className="h-full w-full -scale-x-100 object-cover" />
-      <svg viewBox="0 0 120 90" className="absolute inset-0" aria-hidden>
-        <ellipse cx="60" cy="44" rx="24" ry="31" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="1.5" strokeDasharray="4 3" />
-      </svg>
+    <div
+      className={`relative overflow-hidden rounded-lg border-2 border-surface bg-ink shadow-lift ${className}`}
+      style={{ width, height }}
+      aria-label="Camera self-view with nose pointer (video stays on this device)"
+      role="img"
+    >
+      <video ref={ref} muted playsInline className="h-full w-full -scale-x-100 object-cover opacity-80" />
+      <canvas ref={canvas} width={width} height={height} className="absolute inset-0" aria-hidden />
     </div>
   );
 }

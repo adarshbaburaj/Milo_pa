@@ -1,71 +1,95 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Armchair, FileText, Home, LifeBuoy, PanelLeftClose, PanelLeftOpen, Receipt, Settings, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Milo } from "@/components/milo/Milo";
+import { openConfirm } from "@/lib/agent";
 import { useApp } from "@/lib/store";
 import { Chip } from "./index";
 
 const NAV = [
-  { href: "/", emoji: "🏠", label: "Home" },
-  { href: "/fit", emoji: "🪑", label: "Fit Check" },
-  { href: "/appeal", emoji: "📄", label: "Coverage & Appeal" },
-  { href: "/shop", emoji: "🛒", label: "Shop" },
-  { href: "/receipts", emoji: "🧾", label: "Receipts" },
-  { href: "/settings", emoji: "⚙️", label: "Settings" },
+  { href: "/", icon: Home, label: "Home" },
+  { href: "/fit", icon: Armchair, label: "Chairs that fit" },
+  { href: "/appeal", icon: FileText, label: "My appeal" },
+  { href: "/shop", icon: ShoppingBag, label: "Shop" },
+  { href: "/receipts", icon: Receipt, label: "Receipts" },
+  { href: "/settings", icon: Settings, label: "Settings" },
 ];
+
+export function askForHelp() {
+  openConfirm({
+    question: "Say “I need help” out loud?",
+    tool: "speak",
+    args: { text: "I need help" },
+    kind: "say",
+    utterance: "I need help",
+    inputMode: useApp.getState().mode,
+    raw: "HELP",
+    partial: false,
+  });
+}
 
 export function Sidebar() {
   const path = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const demo = useApp((s) => s.settings.demoMode);
-  if (collapsed)
-    return (
-      <aside className="sticky top-0 flex h-screen w-14 shrink-0 flex-col items-center border-r border-border bg-surface py-3">
-        <button aria-label="Expand sidebar" data-head-target onClick={() => setCollapsed(false)} className="rounded p-2 text-muted hover:bg-surface-hover">
-          <PanelLeftOpen size={18} strokeWidth={1.75} />
-        </button>
-        <nav className="mt-4 flex flex-col gap-1" aria-label="Main">
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} aria-label={n.label} data-head-target className={`rounded p-2 text-lg hover:bg-surface-hover ${path === n.href ? "bg-surface-hover" : ""}`}>
-              <span aria-hidden>{n.emoji}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
-    );
+  const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+
   return (
-    <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-border bg-surface px-2 py-3">
-      <div className="flex items-center justify-between px-2 pb-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold" data-head-target aria-label="Milo home">
-          <Milo size={22} label={false} />
-          <span>Milo</span>
-          {demo && <Chip tone="warning">Demo</Chip>}
+    <aside className={`no-print sticky top-0 flex h-screen shrink-0 flex-col gap-2 border-r border-border bg-surface-alt/60 py-5 ${collapsed ? "w-[88px] items-center px-3" : "w-[272px] px-4"}`}>
+      <div className={`flex items-center ${collapsed ? "flex-col gap-3" : "justify-between px-2"} pb-4`}>
+        <Link href="/" className="flex items-center gap-3 text-xl font-bold" data-head-target aria-label="Milo home">
+          <Milo size={36} label={false} />
+          {!collapsed && <span>Milo</span>}
+          {!collapsed && demo && <Chip tone="warning">Demo</Chip>}
         </Link>
-        <button aria-label="Collapse sidebar" data-head-target onClick={() => setCollapsed(true)} className="rounded p-1.5 text-muted hover:bg-surface-hover">
-          <PanelLeftClose size={18} strokeWidth={1.75} />
+        <button
+          aria-label={collapsed ? "Expand menu" : "Collapse menu"}
+          data-head-target
+          onClick={() => setCollapsed(!collapsed)}
+          className="flex h-11 w-11 items-center justify-center rounded-full text-muted hover:bg-surface"
+        >
+          {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
         </button>
       </div>
-      <nav className="flex flex-col gap-0.5" aria-label="Main">
-        {NAV.map((n) => {
-          const active = n.href === "/" ? path === "/" : path.startsWith(n.href);
+
+      <nav className="flex flex-col gap-1.5" aria-label="Main">
+        {NAV.map(({ href, icon: Icon, label }) => {
+          const active = isActive(href);
           return (
             <Link
-              key={n.href}
-              href={n.href}
+              key={href}
+              href={href}
               data-head-target
+              aria-label={collapsed ? label : undefined}
               aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-2.5 rounded-sm px-2 py-1.5 text-[15px] hover:bg-surface-hover ${active ? "bg-surface-hover font-medium" : "text-ink"}`}
+              className={`flex min-h-[56px] items-center gap-3 rounded-full px-3 text-[17px] transition-colors data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent ${
+                active ? "bg-surface font-semibold text-ink shadow-soft" : "text-ink/80 hover:bg-surface/70"
+              } ${collapsed ? "justify-center px-0" : ""}`}
             >
-              <span aria-hidden className="w-5 text-center">{n.emoji}</span>
-              {n.label}
+              <span className={`flex h-9 w-9 items-center justify-center rounded-full ${active ? "bg-accent text-white" : "bg-surface text-muted"}`}>
+                <Icon size={19} strokeWidth={2} aria-hidden />
+              </span>
+              {!collapsed && label}
             </Link>
           );
         })}
       </nav>
-      <div className="mt-auto px-2 text-xs leading-5 text-muted">
-        Milo helps with paperwork and everyday communication. It is not medical or legal advice.
+
+      <div className="mt-auto flex flex-col gap-3">
+        <button
+          onClick={askForHelp}
+          data-head-target
+          aria-label="I need help — say it out loud"
+          className={`flex min-h-[64px] items-center justify-center gap-2 rounded-full bg-danger-soft font-semibold text-danger hover:brightness-95 data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-danger ${collapsed ? "w-16" : "w-full"}`}
+        >
+          <LifeBuoy size={22} aria-hidden />
+          {!collapsed && "I need help"}
+        </button>
+        {!collapsed && (
+          <p className="px-2 text-[13px] leading-5 text-muted">Milo helps with paperwork and everyday talk. Not medical or legal advice.</p>
+        )}
       </div>
     </aside>
   );

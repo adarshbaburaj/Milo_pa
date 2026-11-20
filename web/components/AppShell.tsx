@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <ReceiptsToggle />
-        <main id="main" className="mx-auto flex w-full max-w-[720px] flex-1 flex-col px-6 pt-16">
+        <main id="main" className="mx-auto flex w-full max-w-[880px] flex-1 flex-col px-8 pt-14">
           <div className="flex-1 pb-6">{children}</div>
           <Dock />
         </main>
@@ -132,13 +132,13 @@ function ReceiptsToggle() {
   const open = useApp((s) => s.receiptsOpen);
   const setOpen = useApp((s) => s.setReceiptsOpen);
   return (
-    <div className="no-print fixed right-4 top-3 z-40">
+    <div className="no-print fixed right-5 top-4 z-40">
       <button
         data-head-target
         aria-label={open ? "Close receipts" : "Open receipts"}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className="rounded px-3 py-1.5 text-sm text-muted hover:bg-surface"
+        className="min-h-[48px] rounded-full border-2 border-border bg-surface px-5 text-[15px] font-semibold shadow-soft hover:border-accent/40 data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent"
       >
         🧾 Receipts
       </button>

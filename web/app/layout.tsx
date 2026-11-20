@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import { Lexend, Newsreader } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Lexend was designed to improve reading proficiency — a good fit for Milo's users.
+const lexend = Lexend({ subsets: ["latin"], variable: "--font-lexend", display: "swap" });
 const newsreader = Newsreader({ subsets: ["latin"], variable: "--font-newsreader", display: "swap" });
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${lexend.variable} ${newsreader.variable}`}>
       <body className="font-sans">
         <AppShell>{children}</AppShell>
       </body>

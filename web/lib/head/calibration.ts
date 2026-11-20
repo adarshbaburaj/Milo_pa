@@ -1,6 +1,6 @@
 // Calibration: neutral pose + signed gains so a comfortable head turn covers the screen.
 export type Calibration = {
-  source: "matrix" | "landmarks";
+  source: "matrix" | "landmarks" | "nose";
   yaw0: number;
   pitch0: number;
   gainX: number; // screen-fractions per unit yaw (signed)
@@ -10,7 +10,8 @@ export type Calibration = {
 
 const KEY = "milo.headCalibration";
 
-export function defaultCalibration(source: "matrix" | "landmarks"): Calibration {
+export function defaultCalibration(source: "matrix" | "landmarks" | "nose"): Calibration {
+  if (source === "nose") return { source, yaw0: 0.5, pitch0: 0.5, gainX: 1 / 0.22, gainY: 1 / 0.16, at: "" };
   // matrix: ~±0.3 rad comfortable turn; landmarks: ~±0.15 ratio
   return source === "matrix"
     ? { source, yaw0: 0, pitch0: 0, gainX: -1 / 0.5, gainY: -1 / 0.35, at: "" }
@@ -40,7 +41,7 @@ export function clearCalibration() {
 
 /** samples: neutral + 4 corners (TL, TR, BR, BL) in raw pose units. */
 export function computeCalibration(
-  source: "matrix" | "landmarks",
+  source: "matrix" | "landmarks" | "nose",
   neutral: { yaw: number; pitch: number },
   corners: { tl: { yaw: number; pitch: number }; tr: { yaw: number; pitch: number }; br: { yaw: number; pitch: number }; bl: { yaw: number; pitch: number } }
 ): Calibration {

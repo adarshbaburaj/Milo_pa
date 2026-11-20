@@ -3,7 +3,7 @@
 import type { FaceLandmarker as FL } from "@mediapipe/tasks-vision";
 import { Calibration, defaultCalibration, loadCalibration } from "./calibration";
 import { OneEuro } from "./oneEuro";
-import { Pose, poseFromLandmarks, poseFromMatrix } from "./pose";
+import { Pose, poseFromLandmarks, poseFromMatrix, poseFromNose } from "./pose";
 
 export type HeadFrame = {
   t: number;
@@ -38,7 +38,9 @@ class FaceTracker {
   sensitivity = 1;
   invertX = false;
   invertY = false;
-  source: "matrix" | "landmarks" = "matrix";
+  source: "matrix" | "landmarks" | "nose" = "nose";
+  /** "nose" = nose-tip pointer (default), "pose" = head rotation */
+  pointer: "nose" | "pose" = "nose";
   running = false;
   error: string | null = null;
 
@@ -133,7 +135,7 @@ class FaceTracker {
         const res = this.landmarker.detectForVideo(this.video, t);
         const lm = res.faceLandmarks?.[0];
         if (lm) {
-          let pose = poseFromMatrix(res.facialTransformationMatrixes?.[0] as any);
+          let pose = this.pointer === "nose" ? poseFromNose(lm as any) : poseFromMatrix(res.facialTransformationMatrixes?.[0] as any);
           if (!pose) pose = poseFromLandmarks(lm as any);
           if (pose) {
             if (pose.source !== this.source) {

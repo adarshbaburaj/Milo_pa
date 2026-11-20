@@ -9,11 +9,11 @@ import { useApp } from "@/lib/store";
 import type { InputMode } from "@/lib/types";
 import { Suggestions } from "./Suggestions";
 
-const MODES: { mode: InputMode; icon: string; label: string }[] = [
-  { mode: "text", icon: "Aa", label: "Type (Alt+1)" },
-  { mode: "voice", icon: "🎙", label: "Speak (Alt+2)" },
-  { mode: "head", icon: "🙂", label: "Head (Alt+3)" },
-  { mode: "sign", icon: "🤟", label: "Sign, beta (Alt+4)" },
+const MODES: { mode: InputMode; icon: string; label: string; short: string }[] = [
+  { mode: "text", icon: "⌨️", label: "Type (Alt+1)", short: "Type" },
+  { mode: "voice", icon: "🎙", label: "Speak (Alt+2)", short: "Speak" },
+  { mode: "head", icon: "🙂", label: "Head (Alt+3)", short: "Head" },
+  { mode: "sign", icon: "🤟", label: "Sign, beta (Alt+4)", short: "Sign" },
 ];
 
 function voiceModeCommand(t: string): InputMode | null {
@@ -50,9 +50,9 @@ export function Dock() {
   }, [setMode]);
 
   return (
-    <div className="no-print sticky bottom-0 z-40 bg-bg pb-5 pt-3">
+    <div className="no-print sticky bottom-0 z-40 bg-bg pb-6 pt-4">
       {mode !== "head" && letters.length > 0 && (
-        <div className="mb-3 rounded-lg border border-border bg-bg p-3 shadow-soft">
+        <div className="mb-3 rounded-lg border border-border bg-surface p-4 shadow-lift">
           <div className="mb-2 flex items-center gap-2">
             <span className="text-sm text-muted">Letters</span>
             <span className="font-mono text-lg font-semibold tracking-widest">{lettersToString(letters).toUpperCase()}</span>
@@ -63,8 +63,8 @@ export function Dock() {
           <Suggestions mode={mode} compact />
         </div>
       )}
-      <div className="flex min-h-[56px] items-end gap-2 rounded-lg border border-border bg-bg p-1.5 shadow-soft">
-        <div role="radiogroup" aria-label="Input mode" className="flex shrink-0 gap-0.5 self-center rounded bg-surface p-0.5">
+      <div className="flex min-h-[72px] items-end gap-3 rounded-[36px] border-2 border-border bg-surface p-2 shadow-lift focus-within:border-accent/50">
+        <div role="radiogroup" aria-label="Input mode" className="flex shrink-0 gap-1 self-center rounded-full bg-surface-alt p-1">
           {MODES.map((m) => (
             <button
               key={m.mode}
@@ -74,9 +74,10 @@ export function Dock() {
               title={m.label}
               data-head-target
               onClick={() => setMode(m.mode)}
-              className={`h-10 w-10 rounded-sm text-[15px] font-semibold transition-colors ${mode === m.mode ? "bg-bg text-ink shadow-soft" : "text-muted hover:text-ink"}`}
+              className={`flex h-12 items-center gap-1.5 rounded-full px-3.5 text-[15px] font-semibold transition-colors data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent ${mode === m.mode ? "bg-accent text-white shadow-soft" : "text-ink/75 hover:bg-surface"}`}
             >
-              {m.icon}
+              <span aria-hidden>{m.icon}</span>
+              <span>{m.short}</span>
             </button>
           ))}
         </div>
@@ -129,16 +130,16 @@ function TextInput() {
             send();
           }
         }}
-        placeholder="Ask Milo, or type first letters like W W A"
-        className="block max-h-[120px] w-full resize-none bg-transparent px-2 py-2 text-base leading-[26px] outline-none placeholder:text-muted focus-visible:outline-none"
+        placeholder="Ask Milo anything — or just first letters, like W W A"
+        className="block max-h-[140px] w-full resize-none bg-transparent px-2 py-3 text-lg leading-[28px] outline-none placeholder:text-muted focus-visible:outline-none"
       />
       <button
         type="submit"
         aria-label="Send"
         disabled={!v.trim()}
-        className="mb-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded bg-accent text-white disabled:bg-surface disabled:text-muted"
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-white disabled:bg-surface-alt disabled:text-muted"
       >
-        <ArrowUp size={18} strokeWidth={2} />
+        <ArrowUp size={24} strokeWidth={2.25} />
       </button>
     </form>
   );
@@ -210,7 +211,7 @@ function VoiceInput() {
   }, []);
 
   if (!available)
-    return <p className="px-2 text-sm text-muted">Voice input needs Chrome (Web Speech API). Type instead, or switch to head mode.</p>;
+    return <p className="px-2 text-base text-muted">Voice input needs Chrome (Web Speech API). Type instead, or switch to head mode.</p>;
 
   return (
     <div className="flex items-center gap-3">
@@ -220,11 +221,11 @@ function VoiceInput() {
         aria-pressed={on}
         data-head-target
         onClick={() => (on ? stop() : start())}
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${on ? "bg-danger text-white" : "bg-accent text-white"}`}
+        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${on ? "bg-danger text-white animate-pulse" : "bg-accent text-white"}`}
       >
         {on ? <MicOff size={20} strokeWidth={1.75} /> : <Mic size={20} strokeWidth={1.75} />}
       </button>
-      <span className={`truncate text-base ${interim ? "text-muted" : "text-muted"}`}>
+      <span className={"truncate text-lg text-muted"}>
         {interim || (on ? "Listening…" : "Tap the mic, or hold Space to talk")}
       </span>
     </div>
@@ -233,9 +234,9 @@ function VoiceInput() {
 
 function HeadDockHint() {
   const ready = useApp((s) => s.headReady);
-  return <p className="px-2 text-sm text-muted">{ready ? "Head mode is on: turn your head to move, dwell or nod to choose, shake to go back." : "Starting the camera… allow access when Chrome asks. Video stays on this device."}</p>;
+  return <p className="px-2 text-base text-muted">{ready ? "Head mode is on: point with your nose, hold still or nod to choose, shake to go back." : "Starting the camera… allow access when Chrome asks. Video stays on this device."}</p>;
 }
 
 function SignDockHint() {
-  return <p className="px-2 text-sm text-muted">Sign input (beta): fingerspelling and a few signs. Not a full ASL translator.</p>;
+  return <p className="px-2 text-base text-muted">Sign input (beta): fingerspelling and a few signs. Not a full ASL translator.</p>;
 }

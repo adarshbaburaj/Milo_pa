@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ReactNode, useId, useState } from "react";
 
 export const EASE = [0.2, 0.8, 0.2, 1] as const;
@@ -8,24 +8,48 @@ export const EASE = [0.2, 0.8, 0.2, 1] as const;
 export function Block({ children, className = "", align = "left" }: { children: ReactNode; className?: string; align?: "left" | "right" }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: EASE }}
-      className={`group relative flex ${align === "right" ? "justify-end" : "justify-start"} ${className}`}
+      transition={{ duration: 0.22, ease: EASE }}
+      className={`relative flex ${align === "right" ? "justify-end" : "justify-start"} ${className}`}
     >
       {children}
     </motion.div>
   );
 }
 
-const CALLOUT_BG = { neutral: "bg-surface", warning: "bg-warning-soft", success: "bg-success-soft", accent: "bg-accent-soft", danger: "bg-danger-soft" };
+export function Card({ children, className = "", as: As = "div" }: { children: ReactNode; className?: string; as?: any }) {
+  return <As className={`rounded-lg border border-border bg-surface p-6 shadow-soft ${className}`}>{children}</As>;
+}
 
-export function Callout({ emoji, children, tone = "neutral", className = "" }: { emoji?: string; children: ReactNode; tone?: keyof typeof CALLOUT_BG; className?: string }) {
+const TONE_BG = {
+  neutral: "bg-surface border-border",
+  warning: "bg-warning-soft border-transparent",
+  success: "bg-success-soft border-transparent",
+  accent: "bg-accent-soft border-transparent",
+  danger: "bg-danger-soft border-transparent",
+  info: "bg-info-soft border-transparent",
+};
+
+export function Callout({ emoji, children, tone = "neutral", className = "" }: { emoji?: string; children: ReactNode; tone?: keyof typeof TONE_BG; className?: string }) {
   return (
-    <div className={`flex gap-3 rounded px-4 py-3 ${CALLOUT_BG[tone]} ${className}`}>
-      {emoji && <span aria-hidden className="text-lg leading-6">{emoji}</span>}
-      <div className="min-w-0 flex-1 leading-6">{children}</div>
+    <div className={`flex gap-4 rounded border px-5 py-4 ${TONE_BG[tone]} ${className}`}>
+      {emoji && (
+        <span aria-hidden className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface/70 text-xl">
+          {emoji}
+        </span>
+      )}
+      <div className="min-w-0 flex-1 self-center leading-relaxed">{children}</div>
     </div>
+  );
+}
+
+export function IconBubble({ children, tone = "accent", size = 48 }: { children: ReactNode; tone?: "accent" | "success" | "warning" | "info" | "neutral" | "danger"; size?: number }) {
+  const bg = { accent: "bg-accent-soft text-accent", success: "bg-success-soft text-success", warning: "bg-warning-soft text-warning", info: "bg-info-soft text-info", neutral: "bg-surface-alt text-ink", danger: "bg-danger-soft text-danger" }[tone];
+  return (
+    <span aria-hidden className={`inline-flex shrink-0 items-center justify-center rounded-full ${bg}`} style={{ width: size, height: size, fontSize: size * 0.45 }}>
+      {children}
+    </span>
   );
 }
 
@@ -40,10 +64,10 @@ export function Toggle({ summary, children, defaultOpen = false, className = "" 
         aria-controls={id}
         onClick={() => setOpen(!open)}
         data-head-target
-        className="flex w-full items-start gap-1.5 rounded-sm px-1 py-1 text-left hover:bg-surface"
+        className="flex min-h-[44px] w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-surface-hover"
       >
-        <ChevronRight size={16} strokeWidth={1.75} className={`mt-1 shrink-0 text-muted transition-transform ${open ? "rotate-90" : ""}`} aria-hidden />
         <span className="min-w-0 flex-1">{summary}</span>
+        <ChevronDown size={20} strokeWidth={2} className={`shrink-0 text-muted transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -52,10 +76,10 @@ export function Toggle({ summary, children, defaultOpen = false, className = "" 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.18, ease: EASE }}
+            transition={{ duration: 0.2, ease: EASE }}
             className="overflow-hidden"
           >
-            <div className="pb-2 pl-7 pr-1 pt-1">{children}</div>
+            <div className="px-2 pb-3 pt-1">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -65,12 +89,12 @@ export function Toggle({ summary, children, defaultOpen = false, className = "" 
 
 export function PropertyRow({ label, children, icon, hint }: { label: string; children: ReactNode; icon?: ReactNode; hint?: ReactNode }) {
   return (
-    <div className="grid grid-cols-[180px_1fr] items-start gap-3 py-1.5 text-[15px]">
+    <div className="grid grid-cols-[minmax(160px,220px)_1fr] items-start gap-4 border-b border-border py-3 last:border-0">
       <div className="flex items-center gap-2 text-muted">
         {icon}
         <span>{label}</span>
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 font-medium">
         {children}
         {hint}
       </div>
@@ -80,13 +104,13 @@ export function PropertyRow({ label, children, icon, hint }: { label: string; ch
 
 export function Table({ head, children, caption }: { head: ReactNode[]; children: ReactNode; caption?: string }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-[15px]">
+    <div className="overflow-x-auto rounded border border-border bg-surface">
+      <table className="w-full border-collapse">
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
-          <tr className="border-b border-border text-left text-sm text-muted">
+          <tr className="border-b border-border bg-surface-alt text-left text-sm text-muted">
             {head.map((h, i) => (
-              <th key={i} scope="col" className="px-3 py-2 font-normal">
+              <th key={i} scope="col" className="px-4 py-3 font-medium">
                 {h}
               </th>
             ))}
@@ -99,31 +123,38 @@ export function Table({ head, children, caption }: { head: ReactNode[]; children
 }
 
 const CHIP_TONE = {
-  neutral: "bg-surface text-muted",
-  accent: "bg-accent-soft text-[#0b5cad]",
+  neutral: "bg-surface-alt text-muted",
+  accent: "bg-accent-soft text-accent-hover",
   success: "bg-success-soft text-success",
-  danger: "bg-danger-soft text-[#b42323]",
-  warning: "bg-warning-soft text-[#8a5d12]",
+  danger: "bg-danger-soft text-danger",
+  warning: "bg-warning-soft text-warning",
+  info: "bg-info-soft text-info",
 };
 
 export function Chip({ children, tone = "neutral", className = "", title }: { children: ReactNode; tone?: keyof typeof CHIP_TONE; className?: string; title?: string }) {
   return (
-    <span title={title} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium leading-5 ${CHIP_TONE[tone]} ${className}`}>
+    <span title={title} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[13px] font-medium leading-6 ${CHIP_TONE[tone]} ${className}`}>
       {children}
     </span>
   );
 }
 
-const MODE_CHIP: Record<string, string> = { head: "🙂 head", voice: "🎙 voice", text: "Aa text", sign: "🤟 sign" };
+const MODE_CHIP: Record<string, string> = { head: "🙂 head", voice: "🎙 voice", text: "⌨️ typed", sign: "🤟 sign" };
 export function ModeChip({ mode }: { mode?: string }) {
   if (!mode) return null;
   return <Chip>{MODE_CHIP[mode] ?? mode}</Chip>;
 }
 
 export function SourceChip({ live, label }: { live: boolean; label?: string }) {
-  return <Chip tone={live ? "success" : "neutral"}>{label ? `${label} · ` : ""}{live ? "live" : "mock"}</Chip>;
+  return (
+    <Chip tone={live ? "success" : "neutral"}>
+      {label ? `${label} · ` : ""}
+      {live ? "live" : "mock"}
+    </Chip>
+  );
 }
 
+/** Big selectable card for head / sign / touch. Min 96×96. */
 export function Tile({
   children,
   selected,
@@ -149,8 +180,8 @@ export function Tile({
       disabled={disabled}
       data-head-target
       onClick={onSelect}
-      className={`relative flex min-h-[88px] min-w-[88px] select-none items-center justify-center rounded-lg bg-surface text-ink transition-colors hover:bg-surface-hover disabled:opacity-40 data-[head-hover=true]:bg-accent-soft data-[head-hover=true]:ring-2 data-[head-hover=true]:ring-accent ${
-        selected ? "bg-accent-soft ring-2 ring-accent" : ""
+      className={`relative flex min-h-[96px] min-w-[96px] select-none items-center justify-center rounded-lg border-2 bg-surface text-ink shadow-soft transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lift disabled:translate-y-0 disabled:opacity-40 disabled:shadow-none data-[head-hover=true]:-translate-y-0.5 data-[head-hover=true]:border-accent data-[head-hover=true]:bg-accent-soft ${
+        selected ? "border-accent bg-accent-soft" : "border-border"
       } ${size === "lg" ? "text-[40px] font-semibold" : ""} ${className}`}
     >
       {children}
@@ -166,21 +197,26 @@ export function Button({
   label,
   disabled,
   type = "button",
+  size = "md",
 }: {
   children: ReactNode;
   onClick?: () => void;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "danger";
   className?: string;
   label?: string;
   disabled?: boolean;
   type?: "button" | "submit";
+  size?: "md" | "lg";
 }) {
   const v =
     variant === "primary"
-      ? "bg-accent text-white hover:bg-[#1a73c9]"
+      ? "bg-accent text-white shadow-soft hover:bg-accent-hover"
+      : variant === "danger"
+      ? "bg-danger text-white hover:brightness-95"
       : variant === "ghost"
-      ? "text-muted hover:bg-surface"
-      : "bg-surface text-ink hover:bg-surface-hover";
+      ? "text-muted hover:bg-surface-alt"
+      : "border-2 border-border bg-surface text-ink hover:border-accent/40 hover:bg-surface-hover";
+  const sz = size === "lg" ? "min-h-[64px] px-7 text-lg" : "min-h-[52px] px-5 text-base";
   return (
     <button
       type={type}
@@ -188,7 +224,7 @@ export function Button({
       onClick={onClick}
       disabled={disabled}
       data-head-target
-      className={`inline-flex min-h-[40px] items-center gap-2 rounded px-3.5 py-2 text-[15px] font-medium transition-colors disabled:opacity-40 ${v} ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-40 data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent ${sz} ${v} ${className}`}
     >
       {children}
     </button>
@@ -197,18 +233,20 @@ export function Button({
 
 export function PageTitle({ emoji, title, subtitle }: { emoji?: string; title: string; subtitle?: ReactNode }) {
   return (
-    <header className="mb-8">
-      {emoji && <div aria-hidden className="mb-3 text-5xl">{emoji}</div>}
-      <h1 className="text-[32px] font-semibold leading-10 tracking-tight">{title}</h1>
-      {subtitle && <p className="mt-1 text-muted">{subtitle}</p>}
+    <header className="mb-10 flex items-start gap-5">
+      {emoji && <IconBubble size={64}>{emoji}</IconBubble>}
+      <div>
+        <h1 className="text-[34px] font-semibold leading-tight tracking-tight">{title}</h1>
+        {subtitle && <p className="mt-1 text-lg text-muted">{subtitle}</p>}
+      </div>
     </header>
   );
 }
 
 export function Section({ title, children, className = "" }: { title: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`mt-10 ${className}`}>
-      <h2 className="mb-3 text-xl font-semibold">{title}</h2>
+    <section className={`mt-12 ${className}`}>
+      <h2 className="mb-4 text-[22px] font-semibold">{title}</h2>
       {children}
     </section>
   );
