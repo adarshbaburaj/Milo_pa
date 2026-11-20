@@ -1,101 +1,131 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { Milo } from "@/components/milo/Milo";
+import { api } from "@/lib/api";
+import { quick } from "@/lib/agent";
+import { useApp } from "@/lib/store";
+import { Block, Button, Callout, ModeChip } from "@/components/ui";
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+}
+
+const QUICK = [
+  ["🪑", "Check a chair fits", "Which chairs fit my home?"],
+  ["📄", "Where’s my appeal?", "Where's my wheelchair appeal?"],
+  ["🗣", "Say something for me", "__head__"],
+  ["🛒", "Shop", "__shop__"],
+] as const;
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const messages = useApp((s) => s.messages);
+  const dataVersion = useApp((s) => s.dataVersion);
+  const [name, setName] = useState("Maria");
+  const [nudges, setNudges] = useState<{ emoji: string; text: string; href: string; tone: "warning" | "success" | "neutral" }[]>([]);
+  const end = useRef<HTMLDivElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    api("/api/profile").then((p) => setName(p.name.split(" ")[0])).catch(() => {});
+    Promise.all([api("/api/case"), api("/api/catalog")])
+      .then(([c, cat]) => {
+        const n: typeof nudges = [];
+        if (c.case.status === "appeal_filed") n.push({ emoji: "📄", text: `Appeal filed · Acme should decide by ${new Date(c.case.decisionDue + "T12:00").toLocaleDateString([], { month: "short", day: "numeric" })}`, href: "/appeal", tone: "success" });
+        else n.push({ emoji: "📄", text: `Your appeal deadline is in ${c.daysLeft} days`, href: "/appeal", tone: "warning" });
+        const fits = cat.items.filter((i: any) => i.fits).length;
+        n.push({ emoji: "🪑", text: `${fits} chairs fit your home`, href: "/fit", tone: "neutral" });
+        setNudges(n);
+      })
+      .catch(() => {});
+  }, [dataVersion]);
+
+  useEffect(() => {
+    end.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages.length]);
+
+  const date = new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+
+  return (
+    <div>
+      <header className="mb-8 flex items-center gap-4">
+        <Milo size={48} />
+        <div>
+          <h1 className="text-[32px] font-semibold leading-10 tracking-tight">
+            {greeting()}, {name}
+          </h1>
+          <p className="text-muted">{date}</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      {nudges.length > 0 && (
+        <div className="mb-8 flex flex-col gap-2">
+          {nudges.slice(0, 2).map((n) => (
+            <Link key={n.text} href={n.href} data-head-target className="block rounded hover:brightness-[0.98]">
+              <Callout emoji={n.emoji} tone={n.tone}>{n.text}</Callout>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-4" aria-label="Conversation" role="log">
+        {messages.map((m) =>
+          m.role === "user" ? (
+            <Block key={m.id} align="right">
+              <div className="max-w-[80%] rounded-lg bg-surface px-4 py-2.5">
+                <div className="mb-1 flex items-center justify-end gap-2">
+                  {m.letters && <span className="font-mono text-xs text-muted">{m.letters.toUpperCase()} →</span>}
+                  <ModeChip mode={m.mode} />
+                </div>
+                <div>{m.text}</div>
+              </div>
+            </Block>
+          ) : (
+            <Block key={m.id}>
+              <div className="flex max-w-[85%] gap-3">
+                <div className="mt-0.5 shrink-0"><Milo size={28} label={false} /></div>
+                <div className="pt-0.5">
+                  <div>{m.text}</div>
+                  <div className="mt-1 flex gap-3 text-sm">
+                    {m.link && (
+                      <Link href={m.link} className="text-accent hover:underline" data-head-target>
+                        {m.linkLabel ?? "Open"} →
+                      </Link>
+                    )}
+                    {m.receiptId && (
+                      <button className="text-muted hover:underline" onClick={() => useApp.getState().setReceiptsOpen(true)} data-head-target>
+                        🧾 Receipt
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Block>
+          )
+        )}
+        <div ref={end} />
+      </div>
+
+      {messages.length === 0 && (
+        <div className="mt-10">
+          <p className="mb-3 text-sm text-muted">Try</p>
+          <div className="grid grid-cols-2 gap-2">
+            {QUICK.map(([emoji, label, q]) => (
+              <Button
+                key={label}
+                className="justify-start py-3"
+                onClick={() => {
+                  if (q === "__head__") useApp.getState().setMode("head");
+                  else if (q === "__shop__") location.assign("/shop");
+                  else quick(q);
+                }}
+              >
+                <span aria-hidden>{emoji}</span> {label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

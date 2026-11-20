@@ -1,0 +1,282 @@
+[
+ {
+  "text": "I want water",
+  "kind": "say",
+  "tool": "none",
+  "count": 14,
+  "usualTime": "morning"
+ },
+ {
+  "text": "I want to watch TV",
+  "kind": "say",
+  "tool": "none",
+  "count": 6,
+  "usualTime": "evening"
+ },
+ {
+  "text": "I'm in pain",
+  "kind": "say",
+  "tool": "none",
+  "count": 3,
+  "usualTime": "any"
+ },
+ {
+  "text": "I'm cold",
+  "kind": "say",
+  "tool": "none",
+  "count": 5,
+  "usualTime": "evening"
+ },
+ {
+  "text": "I'm tired",
+  "kind": "say",
+  "tool": "none",
+  "count": 7,
+  "usualTime": "evening"
+ },
+ {
+  "text": "Thank you",
+  "kind": "say",
+  "tool": "none",
+  "count": 22,
+  "usualTime": "any"
+ },
+ {
+  "text": "Please wait",
+  "kind": "say",
+  "tool": "none",
+  "count": 9,
+  "usualTime": "any"
+ },
+ {
+  "text": "I need help",
+  "kind": "say",
+  "tool": "none",
+  "count": 8,
+  "usualTime": "any"
+ },
+ {
+  "text": "I need the bathroom",
+  "kind": "say",
+  "tool": "none",
+  "count": 6,
+  "usualTime": "any"
+ },
+ {
+  "text": "Yes please",
+  "kind": "say",
+  "tool": "none",
+  "count": 12,
+  "usualTime": "any"
+ },
+ {
+  "text": "No thank you",
+  "kind": "say",
+  "tool": "none",
+  "count": 8,
+  "usualTime": "any"
+ },
+ {
+  "text": "Call Alex",
+  "kind": "say",
+  "tool": "none",
+  "count": 5,
+  "usualTime": "afternoon"
+ },
+ {
+  "text": "Good morning",
+  "kind": "say",
+  "tool": "none",
+  "count": 10,
+  "usualTime": "morning"
+ },
+ {
+  "text": "Good night",
+  "kind": "say",
+  "tool": "none",
+  "count": 6,
+  "usualTime": "night"
+ },
+ {
+  "text": "I love you",
+  "kind": "say",
+  "tool": "none",
+  "count": 4,
+  "usualTime": "evening"
+ },
+ {
+  "text": "Turn on the lights",
+  "kind": "say",
+  "tool": "none",
+  "count": 5,
+  "usualTime": "evening"
+ },
+ {
+  "text": "Open the door",
+  "kind": "say",
+  "tool": "none",
+  "count": 4,
+  "usualTime": "any"
+ },
+ {
+  "text": "Close the window",
+  "kind": "say",
+  "tool": "none",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "I'm hungry",
+  "kind": "say",
+  "tool": "none",
+  "count": 6,
+  "usualTime": "afternoon"
+ },
+ {
+  "text": "I want coffee",
+  "kind": "say",
+  "tool": "none",
+  "count": 9,
+  "usualTime": "morning"
+ },
+ {
+  "text": "Can you help me?",
+  "kind": "say",
+  "tool": "none",
+  "count": 4,
+  "usualTime": "any"
+ },
+ {
+  "text": "Please call my brother",
+  "kind": "say",
+  "tool": "none",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "I'm too hot",
+  "kind": "say",
+  "tool": "none",
+  "count": 2,
+  "usualTime": "afternoon"
+ },
+ {
+  "text": "I want to go outside",
+  "kind": "say",
+  "tool": "none",
+  "count": 3,
+  "usualTime": "afternoon"
+ },
+ {
+  "text": "Wait a moment please",
+  "kind": "say",
+  "tool": "none",
+  "count": 3,
+  "usualTime": "any"
+ },
+ {
+  "text": "How are you?",
+  "kind": "say",
+  "tool": "none",
+  "count": 5,
+  "usualTime": "any"
+ },
+ {
+  "text": "I don't understand",
+  "kind": "say",
+  "tool": "none",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "Please speak slowly",
+  "kind": "say",
+  "tool": "none",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "Where's my wheelchair appeal?",
+  "kind": "task",
+  "tool": "status",
+  "count": 4,
+  "usualTime": "morning"
+ },
+ {
+  "text": "What did Acme say?",
+  "kind": "task",
+  "tool": "coverage",
+  "count": 3,
+  "usualTime": "any"
+ },
+ {
+  "text": "What does my insurance cover?",
+  "kind": "task",
+  "tool": "coverage",
+  "count": 1,
+  "usualTime": "any"
+ },
+ {
+  "text": "Check if the Glide fits",
+  "kind": "task",
+  "tool": "fit_check",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "Check the Comet fits",
+  "kind": "task",
+  "tool": "fit_check",
+  "count": 1,
+  "usualTime": "any"
+ },
+ {
+  "text": "Which chairs fit my home?",
+  "kind": "task",
+  "tool": "fit_check",
+  "count": 2,
+  "usualTime": "any"
+ },
+ {
+  "text": "Draft my appeal",
+  "kind": "task",
+  "tool": "appeal",
+  "count": 1,
+  "usualTime": "any"
+ },
+ {
+  "text": "File the appeal",
+  "kind": "task",
+  "tool": "appeal",
+  "count": 0,
+  "usualTime": "any"
+ },
+ {
+  "text": "Order the Glide P2",
+  "kind": "task",
+  "tool": "shop",
+  "count": 0,
+  "usualTime": "any"
+ },
+ {
+  "text": "Ask Alex to approve",
+  "kind": "task",
+  "tool": "caregiver",
+  "count": 0,
+  "usualTime": "any"
+ },
+ {
+  "text": "When is my appeal due?",
+  "kind": "task",
+  "tool": "status",
+  "count": 1,
+  "usualTime": "any"
+ },
+ {
+  "text": "Show my receipts",
+  "kind": "task",
+  "tool": "status",
+  "count": 0,
+  "usualTime": "any"
+ }
+]
