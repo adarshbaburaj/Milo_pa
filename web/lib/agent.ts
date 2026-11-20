@@ -103,7 +103,7 @@ function refreshSuggestions(letters: string[]) {
     try {
       const res = await api<{ suggestions: Suggestion[]; model: ModelCall | null; source: string }>("/api/predict", {
         json: { letters: s, mode: lastInputMode, context: { strategy: "context" } },
-        timeoutMs: 4000,
+        timeoutMs: 6000,
       });
       if (seq === predictSeq && res.suggestions?.length) {
         st().setSuggestions(res.suggestions, res.source === "live" ? "live" : "local", res.model);
@@ -196,7 +196,7 @@ async function routeAndConfirm(
   milo.set("thinking", true);
   let r: RouteResult;
   try {
-    r = await api<RouteResult>("/api/route", { json: { utterance, mode }, timeoutMs: 5000 });
+    r = await api<RouteResult>("/api/route", { json: { utterance, mode }, timeoutMs: 9000 });
   } catch {
     r = { kind: "say", tool: "speak", args: { text: utterance }, confirm_text: `Say “${utterance}” out loud?`, needs_confirm: true, source: "local" };
   } finally {

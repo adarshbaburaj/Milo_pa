@@ -2,6 +2,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { HeadBoard } from "@/components/input/HeadBoard";
+import { SignInput } from "@/components/input/SignInput";
 import { milo } from "@/components/milo/useMilo";
 import { ReceiptsPanel } from "@/components/receipts/ReceiptsPanel";
 import { ConfirmBar } from "@/components/ui/ConfirmBar";
@@ -117,6 +118,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <ReceiptsPanel />
       {mode === "head" && <HeadBoard />}
+      {mode === "sign" && <SignInput />}
       <ConfirmBar />
       <SpeakOverlay />
       <VerifyModal />
