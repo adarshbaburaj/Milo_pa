@@ -1,0 +1,10 @@
+{
+  "name": "Maria Alvarez", "city": "Oakland, CA",
+  "hipWidthIn": 17, "seatWidthRangeIn": [18, 20],
+  "transferHeightRangeIn": [19, 21],
+  "canSelfPropelFt": 20,
+  "home": { "narrowestDoorwayIn": 28, "narrowestDoorwayName": "bathroom door", "hallwayTurnSpaceIn": 24 },
+  "insurer": "Acme Health Plan (fictional)", "memberId": "ACM-000-DEMO",
+  "caregiver": { "name": "Alex", "relation": "brother", "approvalOverUsd": 500 },
+  "inputModes": ["head", "voice", "text"]
+}

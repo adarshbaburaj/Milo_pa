@@ -1,0 +1,11 @@
+.env
+.env.local
+node_modules/
+.next/
+web/out/
+api/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+api/.milo.sqlite3*
+.DS_Store
