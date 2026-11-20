@@ -66,12 +66,13 @@ async def sponsor_call(
     live: Optional[Callable[[], Awaitable[Any] | Any]],
     mock: Callable[[], Any],
     record: bool = True,
+    timeout: float | None = None,
 ) -> tuple[Any, bool]:
     """Returns (value, was_live)."""
     t0 = time.perf_counter()
     if live is not None:
         try:
-            value = await asyncio.wait_for(_maybe_await(live()), timeout=TIMEOUT_S)
+            value = await asyncio.wait_for(_maybe_await(live()), timeout=timeout or TIMEOUT_S)
             if record:
                 record_sponsor(sponsor, op, True, int((time.perf_counter() - t0) * 1000))
             return value, True

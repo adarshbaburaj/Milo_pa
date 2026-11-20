@@ -7,7 +7,7 @@ import os
 import time
 
 import state
-from adapters import senso
+from adapters import cognee, senso
 from adapters.base import configured, record_model, record_sponsor
 from tools import fit_check
 
@@ -52,9 +52,11 @@ def _fallback(question: str) -> str:
 
 async def run(question: str) -> dict:
     ctx = _context()
-    trusted = await senso.ask(question)  # Senso trusted context (policy, denial, spec sheets) when live
+    trusted, memory = await asyncio.gather(senso.ask(question), cognee.ask(question))
     if trusted:
-        ctx["senso_trusted_context"] = trusted
+        ctx["senso_trusted_context"] = trusted  # verified documents (Senso)
+    if memory:
+        ctx["maria_memory"] = memory  # what Milo remembers about Maria (Cognee knowledge graph)
     evidence = [
         {"label": "Grounded in", "value": "profile, case tracker, fit check, policy summary", "source": "Milo data",
          "sourceType": "model", "live": False},

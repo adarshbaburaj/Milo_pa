@@ -357,6 +357,17 @@ async def route_plan(body: dict) -> dict:
     return {**out["result"], "summary": out["summary"], "sponsorCalls": current_trace()["sponsorCalls"]}
 
 
+@app.post("/api/cognee/seed")
+async def cognee_seed() -> dict:
+    return await cognee.seed()
+
+
+@app.post("/api/cognee/ask")
+async def cognee_ask(body: dict) -> dict:
+    start_trace()
+    return {"answer": await cognee.ask(body.get("question", "")), "sponsorCalls": current_trace()["sponsorCalls"]}
+
+
 @app.post("/api/senso/seed")
 async def senso_seed() -> dict:
     """Load Milo's trusted documents (policy, denial letter, chair spec sheets) into Senso."""
@@ -375,7 +386,7 @@ async def senso_ask(body: dict) -> dict:
 @app.post("/api/memory/phrase")
 async def memory_phrase(body: PhraseRequest) -> dict:
     start_trace()
-    out = await cognee.remember("phrase", body.text, {"kind": body.kind, "tool": body.tool})
+    out = await cognee.remember("phrase", body.text, {"kind": body.kind, "tool": body.tool, "mode": getattr(body, "mode", None)})
     return {"ok": True, "saved": out}
 
 

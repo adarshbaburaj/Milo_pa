@@ -132,7 +132,7 @@ export async function chooseSuggestion(s: Suggestion, rank: number, mode: InputM
   track("suggestion_rank_chosen", { rank, mode, strategy: predictionStrategy(), value: rank });
   track("moves_per_sentence", { moves, mode, letters: s.text.length });
   track("time_to_intent_ms", { ms: Math.round(performance.now() - sentenceStart), mode });
-  api("/api/memory/phrase", { json: { text: s.text, kind: s.kind, tool: s.tool } }).catch(() => {});
+  api("/api/memory/phrase", { json: { text: s.text, kind: s.kind, tool: s.tool, mode } }).catch(() => {});
 
   useApp.setState({ lastSaving: { moves, saved: Math.max(0, s.text.replace(/[^A-Za-z]/g, "").length - moves), text: s.text } });
   st().addMessage({ id: uid("m"), role: "user", text: s.text, mode, letters: raw });

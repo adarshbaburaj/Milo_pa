@@ -55,7 +55,7 @@ Check `GET /api/health` or Settings → API status for the live state.
 | **ElevenLabs** | Two human voices: Milo (Sarah) and the voice that speaks for the person (Lauren) | ✅ live |
 | **Claude (Anthropic)** | Grounded chat answers, fallback brain, photo measurement estimates (vision) | ✅ live |
 | **SingleStore** | Audit trail + case tracker mirrored for live SQL analytics and deadline queries | adapter ready — set `SINGLESTORE_URL` |
-| **Cognee** | Phrase memory | mock (SQLite) — key pending |
+| **Cognee** | Long-term memory: every chosen phrase (with time of day + input mode) and Maria's life facts go into her Cognee Cloud knowledge graph (`/remember`); graph search feeds letter prediction ("what does she usually say now?") and chat answers | ✅ live |
 | **Firedrill** | Strict reviewer simulation | rule-based fallback — sign-in pending |
 | **Persona** | Verify the human before filing/paying | sandbox modal |
 | **Google Maps** | Places accessibility + least-walking transit routes | Maps-link fallback — Maps key pending |

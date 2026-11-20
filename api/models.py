@@ -99,6 +99,7 @@ class PhraseRequest(BaseModel):
     text: str
     kind: Optional[str] = None
     tool: Optional[str] = None
+    mode: Optional[str] = None
 
 
 class VerifyStartRequest(BaseModel):

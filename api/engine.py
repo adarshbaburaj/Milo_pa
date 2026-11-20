@@ -253,12 +253,14 @@ async def predict(letters: str, strategy: str = "context") -> dict:
     ctx = _context()
     freq = "; ".join(f"{p['text']} ({p['count']}, {p['usual_time']})" for p in ctx["frequent_phrases"]) if strategy == "context" else ""
     recent = " / ".join(t.get("user") or "" for t in ctx["recent_turns"])
+    habits = cognee.memory_context()  # Cognee knowledge-graph answer about her habits right now (cached)
     user = (
         f"letters: {' '.join(t.upper() for t in tokens)}\n"
         f"time: {ctx['time']}\n"
         f"open tasks: {'; '.join(ctx['open_tasks'])}\n"
         f"recent: {recent}\n"
         f"frequent: {freq}"
+        + (f"\nmemory (Cognee): {habits}" if habits and strategy == "context" else "")
     )
     res = await arcee.complete("small", [{"role": "system", "content": prompt("predict")},
                                          {"role": "user", "content": user}], json_mode=False, max_tokens=100)
