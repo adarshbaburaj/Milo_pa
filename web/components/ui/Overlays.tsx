@@ -25,6 +25,9 @@ export function SpeakOverlay() {
         >
           <Milo size={96} />
           <p className="mt-8 max-w-4xl text-center text-[64px] font-semibold leading-tight tracking-tight">{spoken}</p>
+          <button data-head-target onClick={() => setSpoken(null)} className="mt-10 min-h-[56px] rounded-full border-2 border-border bg-surface px-6 text-lg font-semibold">
+            ✕ Close <span className="text-sm font-normal text-muted">Esc</span>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

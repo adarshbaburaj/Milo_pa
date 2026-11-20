@@ -22,6 +22,7 @@ export function HeadBoard() {
   const ready = useApp((s) => s.headReady);
   const setMode = useApp((s) => s.setMode);
   const confirm = useApp((s) => s.confirm);
+  const lastReply = useApp((s) => [...s.messages].reverse().find((m) => m.role === "milo")?.text);
   const [needsCal, setNeedsCal] = useState(false);
   const [faceOk, setFaceOk] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -85,7 +86,18 @@ export function HeadBoard() {
 
   return (
     <>
-      <div className="no-print fixed right-4 top-14 z-[55] flex flex-col items-end gap-1">
+      <div className="no-print fixed right-4 top-14 z-[55] flex flex-col items-end gap-2">
+        <button
+          data-head-target
+          onClick={() => {
+            clearLetters();
+            close();
+          }}
+          aria-label="Exit head mode (Esc)"
+          className="flex min-h-[56px] items-center gap-2 rounded-full border-2 border-border bg-surface px-6 text-lg font-semibold shadow-lift hover:bg-surface-hover data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent"
+        >
+          ✕ Exit head mode <span className="text-sm font-normal text-muted">Esc</span>
+        </button>
         <SelfView />
         <span className="rounded-full bg-surface px-2 text-xs text-muted">🔒 Video stays on this device · your nose is the pointer</span>
       </div>
@@ -108,7 +120,10 @@ export function HeadBoard() {
                 </span>
               ))
             ) : (
-              <span className="text-muted">First letter of each word{err ? "" : ready ? "" : " · starting camera…"}</span>
+              <span className={lastReply ? "text-lg" : "text-muted"}>
+                {lastReply ?? "First letter of each word"}
+                {err || ready ? "" : " · starting camera…"}
+              </span>
             )}
           </div>
           <div className="text-right text-sm text-muted">

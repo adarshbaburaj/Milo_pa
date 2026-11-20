@@ -7,7 +7,8 @@ import { API_URL } from "@/lib/api";
 export type Who = "user" | "milo";
 
 let audio: HTMLAudioElement | null = null;
-let elevenDown = false; // after a failure, skip ElevenLabs for a while
+let elevenDown = false; // after repeated failures, skip ElevenLabs briefly
+let elevenFails = 0;
 
 let voice: SpeechSynthesisVoice | null = null;
 
@@ -69,24 +70,33 @@ function speakEleven(text: string, opts: SpeakOpts): Promise<boolean> {
       if (audio === a) audio = null;
       resolve(ok);
     };
-    const fail = () => {
+    const fail = (e?: unknown) => {
       if (started) return finish(true); // played partly; don't repeat it in another voice
-      elevenDown = true;
-      setTimeout(() => (elevenDown = false), 60_000);
+      // A blocked autoplay (no tap yet) or one slow start isn't ElevenLabs being down.
+      const blocked = (e as DOMException)?.name === "NotAllowedError";
+      if (!blocked && ++elevenFails >= 2) {
+        elevenDown = true;
+        setTimeout(() => {
+          elevenDown = false;
+          elevenFails = 0;
+        }, 15_000);
+      }
       a.pause();
       finish(false);
     };
-    const startTimer = setTimeout(fail, 4000);
+    // A voice's first request can take several seconds to warm up; wait for it rather than switching to a robotic voice.
+    const startTimer = setTimeout(fail, 12000);
     a.onplaying = () => {
       if (started) return;
       started = true;
+      elevenFails = 0;
       clearTimeout(startTimer);
       milo.set("speaking", true);
       flap = setInterval(() => mouth(!useMiloStore.getState().mouthOpen), 160);
     };
     a.onended = () => finish(true);
     a.onpause = () => started && finish(true); // stopSpeaking()
-    a.onerror = fail;
+    a.onerror = () => fail();
     a.play().catch(fail);
   });
 }

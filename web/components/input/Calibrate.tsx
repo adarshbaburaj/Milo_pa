@@ -98,6 +98,19 @@ export function Calibrate({ onDone, onCancel }: { onDone: () => void; onCancel?:
     return () => clearTimeout(t);
   }, [step, starPos]);
 
+  // Esc always leaves
+  useEffect(() => {
+    if (!onCancel) return;
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        faceTracker?.stop();
+        onCancel();
+      }
+    };
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
+  }, [onCancel]);
+
   const hit = () => {
     milo.react("celebrate");
     setStep("done");
@@ -169,9 +182,26 @@ export function Calibrate({ onDone, onCancel }: { onDone: () => void; onCancel?:
           <HeadPointer />
         </>
       )}
-      {onCancel && step !== "start" && step !== "error" && (
-        <button onClick={onCancel} className="absolute right-4 top-4 rounded px-3 py-1.5 text-sm text-muted hover:bg-surface">
-          Skip
+      {onCancel && (
+        <button
+          data-head-target
+          onClick={() => {
+            faceTracker?.stop();
+            onCancel();
+          }}
+          aria-label="Exit calibration (Esc)"
+          className="absolute right-5 top-5 z-10 flex min-h-[56px] items-center gap-2 rounded-full border-2 border-border bg-surface px-6 text-lg font-semibold shadow-soft hover:bg-surface-hover data-[head-hover=true]:ring-[3px] data-[head-hover=true]:ring-accent"
+        >
+          ✕ Exit <span className="text-sm font-normal text-muted">Esc</span>
+        </button>
+      )}
+      {step === "test" && (
+        <button
+          data-head-target
+          onClick={hit}
+          className="absolute bottom-6 right-6 min-h-[56px] rounded-full px-6 text-lg font-semibold text-muted hover:bg-surface"
+        >
+          Skip the test
         </button>
       )}
     </div>

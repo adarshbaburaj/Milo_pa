@@ -43,6 +43,27 @@ app.add_middleware(
 
 state.init_db()
 
+
+_warm_tasks: list = []
+
+
+@app.on_event("startup")
+async def _warm_voices() -> None:
+    """Warm both ElevenLabs voices so the first real phrase doesn't cold-start (~10 s once)."""
+    if elevenlabs.status() != "live":
+        return
+
+    async def warm(who: str) -> None:
+        try:
+            client, resp = await elevenlabs.open_stream("Hi.", who)  # type: ignore[arg-type]
+            async for _ in elevenlabs.iter_audio(client, resp):
+                pass
+        except Exception as e:  # noqa: BLE001
+            log.warning("voice warm-up failed for %s: %r", who, e)
+
+    # fire-and-forget; never blocks or breaks startup
+    _warm_tasks.extend([asyncio.create_task(warm("milo")), asyncio.create_task(warm("user"))])
+
 # ---- SSE broadcast ------------------------------------------------------------
 
 _subscribers: set[asyncio.Queue] = set()

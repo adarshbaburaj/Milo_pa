@@ -8,6 +8,7 @@ import { ReceiptsPanel } from "@/components/receipts/ReceiptsPanel";
 import { ConfirmBar } from "@/components/ui/ConfirmBar";
 import { LiveRegion, SpeakOverlay, VerifyModal } from "@/components/ui/Overlays";
 import { Sidebar } from "@/components/ui/Sidebar";
+import { MiloToast } from "@/components/ui/MiloToast";
 import { Dock } from "@/components/input/Dock";
 import { DirectorPanel } from "@/components/DirectorPanel";
 import { Captions, HoverDwell, Scanner, VisualAlert } from "@/components/access/Access";
@@ -59,6 +60,24 @@ export function AppShell({ children }: { children: ReactNode }) {
     useApp.getState().announce(names[key]);
     if (useApp.getState().settings.readEverything) import("@/lib/speech/tts").then(({ speak }) => speak(names[key]));
   }, [path, hydrated]);
+
+  // Esc is always a way out: big spoken text → camera modes → receipts panel
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const s = useApp.getState();
+      if (s.confirm || s.verify) return; // those dialogs handle Esc themselves
+      if (s.spoken) return s.setSpoken(null);
+      if (s.mode === "head" || s.mode === "sign") {
+        s.setLetters([]);
+        s.setSuggestions([], "local");
+        return s.setMode("text");
+      }
+      if (s.receiptsOpen) s.setReceiptsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   // settings → html classes
   useEffect(() => {
@@ -130,6 +149,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {mode === "head" && <HeadBoard />}
       {mode === "sign" && <SignInput />}
       <ConfirmBar />
+      <MiloToast />
       <SpeakOverlay />
       <VerifyModal />
       <DirectorPanel />

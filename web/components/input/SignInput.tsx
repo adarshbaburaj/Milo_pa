@@ -42,6 +42,7 @@ function emit(label: string) {
 /** Sign input (beta): fingerspelling + YES/NO/HELP/STOP/MORE via hand landmarks + k-NN. */
 export function SignInput() {
   const letters = useApp((s) => s.letters);
+  const lastReply = useApp((s) => [...s.messages].reverse().find((m) => m.role === "milo")?.text);
   const [ready, setReady] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [reading, setReading] = useState<{ label: string; stable: number } | null>(null);
@@ -178,9 +179,10 @@ export function SignInput() {
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex items-center gap-3">
             <Milo size={36} />
-            <Chip tone="warning">Sign input (beta): fingerspelling and a few signs. Not a full ASL translator.</Chip>
+            {lastReply ? <span className="min-w-0 truncate text-lg" aria-live="polite">{lastReply}</span> : <Chip tone="warning">Sign input (beta): fingerspelling and a few signs. Not a full ASL translator.</Chip>}
             <div className="ml-auto flex gap-2">
               <Button onClick={() => setTeach(!teach)}>{teach ? "Done teaching" : "Teach Milo a sign"}</Button>
+              <Button label="Exit sign mode (Esc)" onClick={() => useApp.getState().setMode("text")}>✕ Exit</Button>
             </div>
           </div>
 

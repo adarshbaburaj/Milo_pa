@@ -23,7 +23,8 @@ export default function ListenPage() {
   const stt = useRef<STT | null>(null);
   const n = useRef(0);
   const end = useRef<HTMLDivElement>(null);
-  const available = typeof window !== "undefined" && sttAvailable();
+  const [available, setAvailable] = useState(true); // decided after mount (avoids a server/client mismatch)
+  useEffect(() => setAvailable(sttAvailable()), []);
   const largeText = useApp((s) => s.settings.largeText);
 
   useEffect(() => {
@@ -35,7 +36,9 @@ export default function ListenPage() {
       milo.set("listening", false);
     };
   }, []);
-  useEffect(() => end.current?.scrollIntoView({ behavior: "smooth", block: "end" }), [lines.length, interim]);
+  useEffect(() => {
+    end.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [lines.length, interim]);
 
   const start = () => {
     stt.current = new STT(
