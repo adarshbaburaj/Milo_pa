@@ -1,5 +1,5 @@
 "use client";
-import { milo, useMiloStore } from "@/components/milo/useMilo";
+import { milo, startTalking, useMiloStore } from "@/components/milo/useMilo";
 import { useApp } from "@/lib/store";
 import { API_URL } from "@/lib/api";
 
@@ -61,10 +61,10 @@ function speakEleven(text: string, opts: SpeakOpts): Promise<boolean> {
     a.playbackRate = opts.rate ?? useApp.getState().settings.voiceRate ?? 1;
     const mouth = useMiloStore.getState().setMouth;
     let started = false;
-    let flap: ReturnType<typeof setInterval> | null = null;
+    let flap: (() => void) | null = null;
     const finish = (ok: boolean) => {
       clearTimeout(startTimer);
-      if (flap) clearInterval(flap);
+      flap?.();
       mouth(false);
       milo.set("speaking", false);
       if (audio === a) audio = null;
@@ -92,7 +92,7 @@ function speakEleven(text: string, opts: SpeakOpts): Promise<boolean> {
       elevenFails = 0;
       clearTimeout(startTimer);
       milo.set("speaking", true);
-      flap = setInterval(() => mouth(!useMiloStore.getState().mouthOpen), 160);
+      flap = startTalking();
     };
     a.onended = () => finish(true);
     a.onpause = () => started && finish(true); // stopSpeaking()
@@ -129,23 +129,21 @@ function speakBrowser(text: string, opts: SpeakOpts = {}): Promise<void> {
     u.volume = opts.volume ?? 1;
     const mouth = useMiloStore.getState().setMouth;
     let mouthTimer: ReturnType<typeof setTimeout> | null = null;
-    // fallback mouth flapping for voices that don't emit boundary events
-    let flap: ReturnType<typeof setInterval> | null = null;
-    let gotBoundary = false;
+    // natural mouth movement until (if ever) the voice gives us word boundaries
+    let flap: (() => void) | null = null;
     u.onstart = () => {
       milo.set("speaking", true);
-      flap = setInterval(() => {
-        if (!gotBoundary) mouth(!useMiloStore.getState().mouthOpen);
-      }, 180);
+      flap = startTalking();
     };
     u.onboundary = () => {
-      gotBoundary = true;
+      flap?.();
+      flap = null;
       mouth(true);
       if (mouthTimer) clearTimeout(mouthTimer);
       mouthTimer = setTimeout(() => mouth(false), 140);
     };
     const done = () => {
-      if (flap) clearInterval(flap);
+      flap?.();
       mouth(false);
       milo.set("speaking", false);
       resolve();

@@ -1,5 +1,6 @@
 "use client";
 import { create } from "zustand";
+import { miloSound } from "@/lib/sounds";
 
 export type MiloState =
   | "idle"
@@ -48,6 +49,8 @@ export const useMiloStore = create<MiloStore>((set, get) => ({
   mouthOpen: false,
   set: (f, on) => {
     if (get().flags[f] === on) return;
+    if (on && f === "listening") miloSound("listen");
+    if (!on && f === "sleep") miloSound("wake");
     set({ flags: { ...get().flags, [f]: on } });
   },
   react: (s) => {
@@ -59,6 +62,7 @@ export const useMiloStore = create<MiloStore>((set, get) => ({
       return;
     }
     if (timer) clearTimeout(timer);
+    if (s === "happy" || s === "celebrate" || s === "confused") miloSound(s);
     set({ transient: s, transientKey: get().transientKey + 1 });
     timer = setTimeout(() => set({ transient: null }), ms);
   },
@@ -87,4 +91,33 @@ export const milo = {
 
 export function useMilo() {
   return milo;
+}
+
+/**
+ * Natural mouth movement while a voice plays: syllable-like open/close with small pauses between phrases,
+ * instead of a metronome flap. Returns a stop function.
+ */
+export function startTalking(): () => void {
+  const setMouth = useMiloStore.getState().setMouth;
+  let t: ReturnType<typeof setTimeout>;
+  let syll = 0;
+  let stopped = false;
+  const open = () => {
+    if (stopped) return;
+    setMouth(true);
+    t = setTimeout(close, 85 + Math.random() * 75);
+  };
+  const close = () => {
+    if (stopped) return;
+    setMouth(false);
+    syll++;
+    const pause = syll % (4 + Math.floor(Math.random() * 4)) === 0 ? 200 + Math.random() * 160 : 55 + Math.random() * 80;
+    t = setTimeout(open, pause);
+  };
+  open();
+  return () => {
+    stopped = true;
+    clearTimeout(t);
+    setMouth(false);
+  };
 }
