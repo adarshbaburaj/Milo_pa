@@ -39,14 +39,21 @@
   .num { font-variant-numeric:tabular-nums; }
   .strip { display:flex; flex-wrap:wrap; gap:14px 18px; justify-content:center; max-width:1500px; }
   .strip span { padding:10px 22px; border-radius:999px; background:#fff; font-weight:700; font-size:30px; box-shadow:0 6px 18px rgba(90,60,10,.10); }
+  .sp { position:relative; width:404px; height:322px; padding:26px 26px 22px; border-radius:26px; background:#fff;
+        box-shadow:0 14px 40px rgba(90,60,10,.12), 0 0 0 1px rgba(60,40,10,.05); text-align:left; }
+  .sp .lg { display:flex; align-items:center; gap:12px; height:72px; }
+  .sp .lg img { height:64px; width:auto; max-width:220px; object-fit:contain; border-radius:12px; }
+  .sp h3 { font-weight:900; font-size:32px; letter-spacing:-0.01em; margin-top:14px; }
+  .sp p { font-weight:600; font-size:23px; line-height:1.32; color:var(--muted); margin-top:8px; }
+  .spgrid { position:absolute; left:96px; top:196px; display:grid; grid-template-columns:repeat(4, 404px); gap:24px; }
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-start="0" data-duration="108" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="main" data-start="0" data-duration="95" data-width="1920" data-height="1080">
   <div id="bg"></div>
 
   <!-- 1 · The question -->
-  <div id="s1" class="scene clip" data-start="0" data-duration="7" data-track-index="1">
+  <div id="s1" class="scene clip" data-start="0" data-duration="5" data-track-index="1">
     <div class="center">
       <div class="big"><span id="s1a" class="w">AI is for</span> <span id="s1b" class="w" style="color:var(--accent)">everyone.</span></div>
       <div id="s1c" class="mid" style="margin-top:40px;color:var(--muted)">…is it, really?</div>
@@ -54,7 +61,7 @@
   </div>
 
   <!-- 2 · Who gets left out -->
-  <div id="s2" class="scene clip" data-start="7" data-duration="9" data-track-index="1">
+  <div id="s2" class="scene clip" data-start="5" data-duration="7.9" data-track-index="1">
     <div class="center" style="justify-content:flex-start;padding-top:170px">
       <div class="big num"><span id="s2n">0.0</span> billion</div>
       <div id="s2t" class="mid" style="margin-top:22px;color:var(--muted)">people live with a disability</div>
@@ -66,7 +73,7 @@
   </div>
 
   <!-- 3 · Meet Milo -->
-  <div id="s3" class="scene clip" data-start="16" data-duration="8.5" data-track-index="1">
+  <div id="s3" class="scene clip" data-start="12.9" data-duration="7.4" data-track-index="1">
     <div id="s3m" class="milo" style="left:760px;top:250px;width:400px;height:400px">
       <img id="s3m-idle" src="assets/milo/idle.webp" alt="" />
       <img id="s3m-happy" src="assets/milo/happy.webp" alt="" style="opacity:0" />
@@ -79,13 +86,13 @@
   </div>
 
   <!-- 4 · It asks what you need -->
-  <div id="s4" class="scene clip" data-start="24.5" data-duration="6.5" data-track-index="1">
+  <div id="s4" class="scene clip" data-start="20.3" data-duration="5.5" data-track-index="1">
     <div class="kick" id="s4k"><b>1</b>It shapes itself around you</div>
     <div class="card"><img id="s4a" class="shot" src="assets/app/needs.png" alt="" /><img id="s4b" class="shot" src="assets/app/plan.png" alt="" style="opacity:0" /></div>
   </div>
 
   <!-- 5 · First letters -->
-  <div id="s5" class="scene clip" data-start="31" data-duration="7" data-track-index="1">
+  <div id="s5" class="scene clip" data-start="25.8" data-duration="6" data-track-index="1">
     <div class="kick" id="s5k"><b>2</b>A few letters is enough</div>
     <div class="card"><img id="s5a" class="shot" src="assets/app/wwa.png" alt="" /><img id="s5b" class="shot" src="assets/app/wwa-answer.png" alt="" style="opacity:0" /></div>
     <div id="s5l" style="position:absolute;right:120px;top:20px;display:flex;gap:16px">
@@ -96,7 +103,7 @@
   </div>
 
   <!-- 6 · It knows your chair (3D) -->
-  <div id="s6" class="scene clip" data-start="38" data-duration="12" data-track-index="1">
+  <div id="s6" class="scene clip" data-start="31.8" data-duration="10.1" data-track-index="1">
     <canvas id="c3d1" class="three" width="1920" height="1080"></canvas>
     <div class="kick" id="s6k"><b>3</b>It knows your chair and your home</div>
     <div id="s6door" class="tag3d" style="left:960px;top:150px">doorway · 28″</div>
@@ -106,7 +113,7 @@
   </div>
 
   <!-- 7 · The paperwork -->
-  <div id="s7" class="scene clip" data-start="50" data-duration="11" data-track-index="1">
+  <div id="s7" class="scene clip" data-start="41.9" data-duration="9.5" data-track-index="1">
     <div class="kick" id="s7k"><b>4</b>It fights the paperwork, with receipts</div>
     <div class="card">
       <img id="s7a" class="shot" src="assets/app/appeal-draft.png" alt="" />
@@ -117,7 +124,7 @@
   </div>
 
   <!-- 8 · Safe shopping -->
-  <div id="s8" class="scene clip" data-start="61" data-duration="8" data-track-index="1">
+  <div id="s8" class="scene clip" data-start="51.4" data-duration="6.7" data-track-index="1">
     <div class="kick" id="s8k"><b>5</b>Safe shopping, with family in the loop</div>
     <div class="card">
       <img id="s8a" class="shot" src="assets/app/shop-refuse.png" alt="" />
@@ -128,7 +135,7 @@
   </div>
 
   <!-- 9 · It gets you there (3D) -->
-  <div id="s9" class="scene clip" data-start="69" data-duration="11" data-track-index="1">
+  <div id="s9" class="scene clip" data-start="58.1" data-duration="9.3" data-track-index="1">
     <canvas id="c3d2" class="three" width="1920" height="1080"></canvas>
     <div class="kick" id="s9k"><b>6</b>A route your wheelchair can actually take</div>
     <div id="t-home" class="tag3d">Home</div>
@@ -140,7 +147,7 @@
   </div>
 
   <!-- 10 · The real thing (your recording goes in #rec) -->
-  <div id="s10" class="scene clip" data-start="80" data-duration="20" data-track-index="1">
+  <div id="s10" class="scene clip" data-start="67.4" data-duration="13" data-track-index="1">
     <div class="kick" id="s10k"><b>●</b>Live: no hands, no voice</div>
     <div id="s10slot" class="card" style="background:#FBF7F0"></div>
     <div id="s10m1" class="chip" style="right:231px;left:auto;top:24px;font-size:34px;padding:12px 26px">Head mode · steering with the nose</div>
@@ -149,66 +156,81 @@
 
   <!-- 10 · live footage (root level so the frame extractor can time it); frame matches .card -->
   <div id="s10vid" class="card" style="background:transparent;box-shadow:none;opacity:0;z-index:2">
-    <div id="s10hw" class="shot" data-layout-allow-overflow><video id="s10head" class="clip shot" data-start="80" data-duration="11.5" data-track-index="2" src="assets/live/head.mp4" muted playsinline></video></div>
-    <div id="s10sw" class="shot" data-layout-allow-overflow style="opacity:0"><video id="s10sign" class="clip shot" data-start="91.4" data-duration="8" data-track-index="3" src="assets/live/sign.mp4" muted playsinline></video></div>
+    <div id="s10hw" class="shot" data-layout-allow-overflow><video id="s10head" class="clip shot" data-start="67.4" data-duration="7.2" data-track-index="2" src="assets/live/head-fast.mp4" muted playsinline></video></div>
+    <div id="s10sw" class="shot" data-layout-allow-overflow style="opacity:0"><video id="s10sign" class="clip shot" data-start="74.5" data-duration="5.53" data-track-index="3" src="assets/live/sign-fast.mp4" muted playsinline></video></div>
   </div>
 
   <!-- 11 · Close -->
-  <div id="s11" class="scene clip" data-start="100" data-duration="8" data-track-index="1">
+  <div id="s11" class="scene clip" data-start="80.4" data-duration="4.6" data-track-index="1">
     <div class="center" style="justify-content:flex-start;padding-top:120px">
       <div id="s11m" class="milo" style="position:relative;width:300px;height:300px"><img src="assets/milo/happy.webp" alt="" /></div>
       <div id="s11t" class="big" style="font-size:120px;margin-top:20px">Milo</div>
       <div id="s11s" class="mid" style="color:var(--accent);margin-top:6px">AI that’s actually for everyone.</div>
-      <div id="s11b" class="strip" style="margin-top:56px">
-        <span>Claude</span><span>Qwen on SIE</span><span>ElevenLabs</span><span>Senso</span><span>Cognee</span><span>Airbyte</span><span>Superlinked</span><span>Amplitude</span><span>Statsig</span><span>MediaPipe</span>
-      </div>
     </div>
   </div>
 
+  <!-- 12 · How Milo uses each sponsor (end card) -->
+  <div id="s12" class="scene clip" data-start="85" data-duration="10" data-track-index="1">
+    <div id="s12t" class="mid" style="position:absolute;left:0;right:0;top:70px;text-align:center;font-size:66px;font-weight:900">How Milo uses each sponsor</div>
+    <div class="spgrid">
+      <div id="sp-claude" class="sp"><div class="lg"><img src="assets/logos/claude.svg" alt="" /></div><h3>Claude</h3><p>Grounded answers, and chair measurements from a photo.</p></div>
+      <div id="sp-sie" class="sp"><div class="lg"><img src="assets/logos/superlinked.svg" alt="" /><img src="assets/logos/qwen.svg" alt="" /></div><h3>Superlinked SIE · Qwen</h3><p>The brain: turns first letters into full sentences, and ranks chairs to her needs.</p></div>
+      <div id="sp-eleven" class="sp"><div class="lg"><img src="assets/logos/elevenlabs.svg" alt="" /></div><h3>ElevenLabs</h3><p>Two human voices: Milo’s, and the one that speaks for her.</p></div>
+      <div id="sp-senso" class="sp"><div class="lg"><img src="assets/logos/senso.png" alt="" /></div><h3>Senso</h3><p>Her policy and denial letter, so every answer cites a source.</p></div>
+      <div id="sp-cognee" class="sp"><div class="lg"><img src="assets/logos/cognee.png" alt="" /></div><h3>Cognee</h3><p>Memory of what she usually says, so predictions get faster.</p></div>
+      <div id="sp-airbyte" class="sp"><div class="lg"><img src="assets/logos/airbyte.svg" alt="" /></div><h3>Airbyte</h3><p>Syncs her inbox, so the denial letter arrives on its own.</p></div>
+      <div id="sp-amp" class="sp"><div class="lg"><img src="assets/logos/amplitude.png" alt="" /></div><h3>Amplitude</h3><p>Measures moves per sentence, so each release costs her less effort.</p></div>
+      <div id="sp-statsig" class="sp"><div class="lg"><img src="assets/logos/statsig.svg" alt="" /></div><h3>Statsig</h3><p>Live settings, A/B tests, and sign mode behind a feature gate.</p></div>
+    </div>
+    <div id="s12f" style="position:absolute;left:0;right:0;top:940px;display:flex;justify-content:center;align-items:center;gap:14px;font-weight:700;font-size:28px;color:var(--muted)"><img src="assets/logos/mediapipe.svg" alt="" style="height:40px" />Head and hand tracking run on-device with MediaPipe. Video never leaves the laptop.</div>
+  </div>
+
   <!-- captions (every spoken line) -->
-  <div id="cap1" class="cap clip" data-start="1" data-duration="4.4" data-track-index="5"><span>AI is supposed to be for everyone. But is it, really?</span></div>
-  <div id="cap2" class="cap clip" data-start="7.5" data-duration="7.9" data-track-index="5"><span>Most apps assume you can type, click, talk and hear. More than a billion people can’t do all of those.</span></div>
-  <div id="cap3" class="cap clip" data-start="16.4" data-duration="7" data-track-index="5"><span>Meet Milo. A personal agent you can use with your keyboard, your voice, your head, or your hands.</span></div>
-  <div id="cap4" class="cap clip" data-start="24.8" data-duration="5.4" data-track-index="5"><span>First, Milo asks what’s hard for you, and reshapes itself around you.</span></div>
-  <div id="cap5" class="cap clip" data-start="31.3" data-duration="5.9" data-track-index="5"><span>Spell just the first letters. Milo predicts the rest, and asks before it acts.</span></div>
-  <div id="cap6" class="cap clip" data-start="38.5" data-duration="8" data-track-index="5"><span>Milo knows your body, your chair, and your home. It checks every chair against your narrowest door, before you ever buy it.</span></div>
-  <div id="cap7" class="cap clip" data-start="50.3" data-duration="9.6" data-track-index="5"><span>Denied by insurance? Milo drafts the appeal, a strict reviewer checks it, and Milo files it. With a receipt for every single step.</span></div>
-  <div id="cap8" class="cap clip" data-start="61.3" data-duration="6.2" data-track-index="5"><span>It won’t let you buy a chair that won’t fit. And anything big goes to your caregiver first.</span></div>
-  <div id="cap9" class="cap clip" data-start="69.5" data-duration="8.8" data-track-index="5"><span>And when you go out, Milo plans a route your wheelchair can actually take. No stairs. Real ramps. Working elevators.</span></div>
-  <div id="cap10" class="cap clip" data-start="80.5" data-duration="6.4" data-track-index="5"><span>This is Milo, live. No hands. No voice. Just a nose, and a nod.</span></div>
-  <div id="cap11" class="cap clip" data-start="100.5" data-duration="3.6" data-track-index="5"><span>Milo. AI that’s actually for everyone.</span></div>
+  <div id="cap1" class="cap clip" data-start="0.5" data-duration="3.92" data-track-index="5"><span>AI is supposed to be for everyone. But is it, really?</span></div>
+  <div id="cap2" class="cap clip" data-start="5.3" data-duration="7.21" data-track-index="5"><span>Most apps assume you can type, click, talk and hear. More than a billion people can’t do all of those.</span></div>
+  <div id="cap3" class="cap clip" data-start="13.15" data-duration="6.34" data-track-index="5"><span>Meet Milo. A personal agent you can use with your keyboard, your voice, your head, or your hands.</span></div>
+  <div id="cap4" class="cap clip" data-start="20.5" data-duration="4.81" data-track-index="5"><span>First, Milo asks what’s hard for you, and reshapes itself around you.</span></div>
+  <div id="cap5" class="cap clip" data-start="26" data-duration="5.27" data-track-index="5"><span>Spell just the first letters. Milo predicts the rest, and asks before it acts.</span></div>
+  <div id="cap6" class="cap clip" data-start="32.15" data-duration="7.22" data-track-index="5"><span>Milo knows your body, your chair, and your home. It checks every chair against your narrowest door, before you ever buy it.</span></div>
+  <div id="cap7" class="cap clip" data-start="42.1" data-duration="8.67" data-track-index="5"><span>Denied by insurance? Milo drafts the appeal, a strict reviewer checks it, and Milo files it. With a receipt for every single step.</span></div>
+  <div id="cap8" class="cap clip" data-start="51.6" data-duration="5.59" data-track-index="5"><span>It won’t let you buy a chair that won’t fit. And anything big goes to your caregiver first.</span></div>
+  <div id="cap9" class="cap clip" data-start="58.4" data-duration="7.98" data-track-index="5"><span>And when you go out, Milo plans a route your wheelchair can actually take. No stairs. Real ramps. Working elevators.</span></div>
+  <div id="cap10" class="cap clip" data-start="67.75" data-duration="5.77" data-track-index="5"><span>This is Milo, live. No hands. No voice. Just a nose, and a nod.</span></div>
+  <div id="cap11" class="cap clip" data-start="80.8" data-duration="3.19" data-track-index="5"><span>Milo. AI that’s actually for everyone.</span></div>
 
   <!-- voice -->
-  <audio id="vo1" class="clip" data-start="1" data-track-index="10" data-volume="1" data-duration="4.05" src="assets/vo/vo01.mp3"></audio>
-  <audio id="vo2" class="clip" data-start="7.5" data-track-index="10" data-volume="1" data-duration="7.65" src="assets/vo/vo02.mp3"></audio>
-  <audio id="vo3" class="clip" data-start="16.4" data-track-index="10" data-volume="1" data-duration="6.69" src="assets/vo/vo03.mp3"></audio>
-  <audio id="vo4" class="clip" data-start="24.8" data-track-index="10" data-volume="1" data-duration="5.01" src="assets/vo/vo04.mp3"></audio>
-  <audio id="vo5" class="clip" data-start="31.3" data-track-index="10" data-volume="1" data-duration="5.51" src="assets/vo/vo05.mp3"></audio>
-  <audio id="vo6" class="clip" data-start="38.5" data-track-index="10" data-volume="1" data-duration="7.65" src="assets/vo/vo06.mp3"></audio>
-  <audio id="vo7" class="clip" data-start="50.3" data-track-index="10" data-volume="1" data-duration="9.25" src="assets/vo/vo07.mp3"></audio>
-  <audio id="vo8" class="clip" data-start="61.3" data-track-index="10" data-volume="1" data-duration="5.85" src="assets/vo/vo08.mp3"></audio>
-  <audio id="vo9" class="clip" data-start="69.5" data-track-index="10" data-volume="1" data-duration="8.49" src="assets/vo/vo09.mp3"></audio>
-  <audio id="vo10" class="clip" data-start="80.5" data-track-index="10" data-volume="1" data-duration="6.08" src="assets/vo/vo10.mp3"></audio>
-  <audio id="vo11" class="clip" data-start="100.5" data-track-index="10" data-volume="1" data-duration="3.21" src="assets/vo/vo11.mp3"></audio>
+  <audio id="vo1" class="clip" data-start="0.5" data-track-index="10" data-volume="1" data-duration="3.62" src="assets/vo/fast/vo01.mp3"></audio>
+  <audio id="vo2" class="clip" data-start="5.3" data-track-index="10" data-volume="1" data-duration="6.91" src="assets/vo/fast/vo02.mp3"></audio>
+  <audio id="vo3" class="clip" data-start="13.15" data-track-index="10" data-volume="1" data-duration="6.04" src="assets/vo/fast/vo03.mp3"></audio>
+  <audio id="vo4" class="clip" data-start="20.5" data-track-index="10" data-volume="1" data-duration="4.51" src="assets/vo/fast/vo04.mp3"></audio>
+  <audio id="vo5" class="clip" data-start="26" data-track-index="10" data-volume="1" data-duration="4.97" src="assets/vo/fast/vo05.mp3"></audio>
+  <audio id="vo6" class="clip" data-start="32.15" data-track-index="10" data-volume="1" data-duration="6.92" src="assets/vo/fast/vo06.mp3"></audio>
+  <audio id="vo7" class="clip" data-start="42.1" data-track-index="10" data-volume="1" data-duration="8.37" src="assets/vo/fast/vo07.mp3"></audio>
+  <audio id="vo8" class="clip" data-start="51.6" data-track-index="10" data-volume="1" data-duration="5.29" src="assets/vo/fast/vo08.mp3"></audio>
+  <audio id="vo9" class="clip" data-start="58.4" data-track-index="10" data-volume="1" data-duration="7.68" src="assets/vo/fast/vo09.mp3"></audio>
+  <audio id="vo10" class="clip" data-start="67.75" data-track-index="10" data-volume="1" data-duration="5.47" src="assets/vo/fast/vo10.mp3"></audio>
+  <audio id="vo11" class="clip" data-start="80.8" data-track-index="10" data-volume="1" data-duration="2.89" src="assets/vo/fast/vo11.mp3"></audio>
   <!-- music + sound -->
-  <audio id="music" class="clip" data-start="0" data-duration="108" data-track-index="11" data-volume="0.32" data-fade-in="1.5" data-fade-out="3" src="assets/music.wav"></audio>
-  <audio id="fx-pop1" class="clip" data-start="16.5" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
-  <audio id="fx-t1" class="clip" data-start="31.5" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
-  <audio id="fx-t2" class="clip" data-start="31.9" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
-  <audio id="fx-t3" class="clip" data-start="32.3" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
-  <audio id="fx-thud" class="clip" data-start="44" data-track-index="12" data-volume="0.55" data-duration="0.35" src="assets/sfx/thud.wav"></audio>
-  <audio id="fx-spark1" class="clip" data-start="66.6" data-track-index="12" data-volume="0.45" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
-  <audio id="fx-w1" class="clip" data-start="24.3" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
-  <audio id="fx-w2" class="clip" data-start="49.8" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
-  <audio id="fx-w3" class="clip" data-start="68.8" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
-  <audio id="fx-w4" class="clip" data-start="79.6" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
-  <audio id="fx-t4" class="clip" data-start="89.2" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
-  <audio id="fx-spark3" class="clip" data-start="90.0" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
-  <audio id="fx-w5" class="clip" data-start="91.2" data-track-index="12" data-volume="0.25" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
-  <audio id="fx-t5" class="clip" data-start="95.4" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
-  <audio id="fx-spark4" class="clip" data-start="96.4" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
-  <audio id="fx-pop2" class="clip" data-start="100.3" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
-  <audio id="fx-spark2" class="clip" data-start="101" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="music" class="clip" data-start="0" data-duration="87" data-track-index="11" data-volume="0.32" data-fade-in="1.2" data-fade-out="2" src="assets/music.wav"></audio>
+  <audio id="music2" class="clip" data-start="85" data-duration="10" data-media-start="30" data-track-index="11" data-volume="0.28" data-fade-in="2" data-fade-out="2.5" src="assets/music.wav"></audio>
+  <audio id="fx-pop1" class="clip" data-start="13.24" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
+  <audio id="fx-t1" class="clip" data-start="26.18" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-t2" class="clip" data-start="26.54" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-t3" class="clip" data-start="26.9" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-thud" class="clip" data-start="37.13" data-track-index="12" data-volume="0.55" data-duration="0.35" src="assets/sfx/thud.wav"></audio>
+  <audio id="fx-spark1" class="clip" data-start="56.39" data-track-index="12" data-volume="0.45" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-w1" class="clip" data-start="20.14" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w2" class="clip" data-start="41.75" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w3" class="clip" data-start="57.97" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w4" class="clip" data-start="67.0" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-t4" class="clip" data-start="73.15" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-spark3" class="clip" data-start="73.65" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-w5" class="clip" data-start="74.3" data-track-index="12" data-volume="0.25" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-t5" class="clip" data-start="77.26" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-spark4" class="clip" data-start="77.95" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-pop2" class="clip" data-start="80.64" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
+  <audio id="fx-w6" class="clip" data-start="84.91" data-track-index="12" data-volume="0.3" data-duration="0.7" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-spark2" class="clip" data-start="81.25" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
 </div>
 
 <script>
@@ -232,101 +254,108 @@ document.querySelectorAll(".cap").forEach((el) => {
 });
 
 // 1
-tl.fromTo("#s1b", { opacity: 0, y: 50, rotate: 0 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 0.65);
-tl.to("#s1b", { rotate: -4, duration: 0.18, yoyo: true, repeat: 3, ease: "sine.inOut", transformOrigin: "50% 60%" }, 3.6);
-rise("#s1c", 3.4, 0.7);
-tl.to("#s1b", { opacity: 0.35, duration: 0.6 }, 4.4);
-tl.to("#s1 .center", { opacity: 0, scale: 0.96, duration: 0.5, ease: "power2.in" }, 6.4);
+tl.fromTo("#s1b", { opacity: 0, y: 50, rotate: 0 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 0.33);
+tl.to("#s1b", { rotate: -4, duration: 0.18, yoyo: true, repeat: 3, ease: "sine.inOut", transformOrigin: "50% 60%" }, 2.82);
+rise("#s1c", 2.65, 0.7);
+tl.to("#s1b", { opacity: 0.35, duration: 0.6 }, 3.54);
+tl.to("#s1 .center", { opacity: 0, scale: 0.96, duration: 0.5, ease: "power2.in" }, 4.73);
 
 // 2
 const counter = { v: 0 };
-tl.fromTo(counter, { v: 0 }, { v: 1.3, duration: 2.2, ease: "power2.out", onUpdate: () => (document.querySelector("#s2n").textContent = counter.v.toFixed(1)) }, 7.3);
-rise("#s2 .big", 7.1, 0.6);
-rise("#s2t", 8.2, 0.6);
-["#s2c1", "#s2c2", "#s2c3", "#s2c4"].forEach((s, i) => pop(s, 10.4 + i * 0.45));
-tl.to("#s2 .chip", { y: -10, duration: 1.2, yoyo: true, repeat: 2, ease: "sine.inOut", stagger: 0.15 }, 12.4);
-tl.to("#s2", { opacity: 0, duration: 0.45 }, 15.5);
+tl.fromTo(counter, { v: 0 }, { v: 1.3, duration: 2.2, ease: "power2.out", onUpdate: () => (document.querySelector("#s2n").textContent = counter.v.toFixed(1)) }, 5.18);
+rise("#s2 .big", 5.06, 0.6);
+rise("#s2t", 5.93, 0.6);
+["#s2c1", "#s2c2", "#s2c3", "#s2c4"].forEach((s, i) => pop(s, 7.92 + i * 0.45));
+tl.to("#s2 .chip", { y: -10, duration: 1.2, yoyo: true, repeat: 2, ease: "sine.inOut", stagger: 0.15 }, 9.73);
+tl.to("#s2", { opacity: 0, duration: 0.45 }, 12.49);
 
 // 3 — Milo hops in, then the four ways to talk orbit in
-tl.fromTo("#s3m", { y: -700, scaleY: 1.1, scaleX: 0.92 }, { y: 0, scaleY: 1, scaleX: 1, duration: 0.55, ease: "power2.in", transformOrigin: "50% 88%" }, 16.0);
-tl.to("#s3m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, ease: "power1.out", transformOrigin: "50% 88%" }, 16.55);
-tl.to("#s3m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 88%" }, 16.67);
-tl.set("#s3m-happy", { opacity: 1 }, 16.6);
-tl.set("#s3m-happy", { opacity: 0 }, 18.2);
-rise("#s3t", 16.9, 0.6);
+tl.fromTo("#s3m", { y: -700, scaleY: 1.1, scaleX: 0.92 }, { y: 0, scaleY: 1, scaleX: 1, duration: 0.55, ease: "power2.in", transformOrigin: "50% 88%" }, 12.9);
+tl.to("#s3m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, ease: "power1.out", transformOrigin: "50% 88%" }, 13.29);
+tl.to("#s3m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 88%" }, 13.39);
+tl.set("#s3m-happy", { opacity: 1 }, 13.33);
+tl.set("#s3m-happy", { opacity: 0 }, 14.78);
+rise("#s3t", 13.6, 0.6);
 [["#s3c1", -260, 0], ["#s3c2", 260, 0], ["#s3c3", -260, 0], ["#s3c4", 260, 0]].forEach(([s, x], i) =>
   tl.fromTo(s, { opacity: 0, x: -x * 0.0 + (x > 0 ? -340 : 340), scale: 0.5 }, { opacity: 1, x: 0, scale: 1, duration: 0.7, ease: "back.out(1.6)" }, 19.4 + i * 0.55));
-tl.to("#s3m", { scaleY: 1.025, scaleX: 0.99, duration: 1.4, yoyo: true, repeat: 2, ease: "sine.inOut", transformOrigin: "50% 88%" }, 18.8);
-tl.to("#s3", { opacity: 0, duration: 0.45 }, 24.05);
+tl.to("#s3m", { scaleY: 1.025, scaleX: 0.99, duration: 1.4, yoyo: true, repeat: 2, ease: "sine.inOut", transformOrigin: "50% 88%" }, 15.32);
+tl.to("#s3", { opacity: 0, duration: 0.45 }, 19.95);
 
 // 4
-cardIn("#s4", 24.5);
-push("#s4a", 25.0, 2.6, 0.3, 0.62, 1.3);
-fadeTo("#s4b", 27.6);
-push("#s4b", 27.6, 3.2, 0.36, 0.45, 1.3);
-tl.to("#s4", { opacity: 0, duration: 0.35 }, 30.65);
+cardIn("#s4", 20.3);
+push("#s4a", 20.68, 2.34, 0.3, 0.62, 1.3);
+fadeTo("#s4b", 23.02);
+push("#s4b", 23.02, 2.65, 0.36, 0.45, 1.3);
+tl.to("#s4", { opacity: 0, duration: 0.35 }, 25.57);
 
 // 5
-cardIn("#s5", 31.0);
-["#s5l1", "#s5l2", "#s5l3"].forEach((s, i) => pop(s, 31.5 + i * 0.4));
-push("#s5a", 32.2, 2.4, 0.55, 0.88, 1.6);
-fadeTo("#s5b", 34.7);
-push("#s5b", 34.7, 3, 0.55, 0.28, 1.45);
-tl.to("#s5", { opacity: 0, duration: 0.35 }, 37.65);
+cardIn("#s5", 25.8);
+["#s5l1", "#s5l2", "#s5l3"].forEach((s, i) => pop(s, 26.18 + i * 0.4));
+push("#s5a", 26.81, 2.17, 0.55, 0.88, 1.6);
+fadeTo("#s5b", 29.07);
+push("#s5b", 29.07, 2.52, 0.55, 0.28, 1.45);
+tl.to("#s5", { opacity: 0, duration: 0.35 }, 31.56);
 
 // 6 — 3D labels, then the real page
-tl.fromTo("#s6k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 38.3);
-pop("#s6door", 38.8);
-rise("#s6la", 40.4);
-rise("#s6lb", 44.0);
-tl.to(["#s6la", "#s6lb", "#s6door"], { opacity: 0, duration: 0.3 }, 46.3);
-tl.fromTo("#s6card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 46.5);
-push("#s6img", 46.9, 3, 0.4, 0.62, 1.4);
-tl.to("#s6", { opacity: 0, duration: 0.35 }, 49.65);
+tl.fromTo("#s6k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 32.01);
+pop("#s6door", 32.42);
+rise("#s6la", 33.87);
+rise("#s6lb", 37.13);
+tl.to(["#s6la", "#s6lb", "#s6door"], { opacity: 0, duration: 0.3 }, 39.9);
+tl.fromTo("#s6card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: E }, 40.0);
+push("#s6img", 40.3, 1.4, 0.4, 0.62, 1.4);
+tl.to("#s6", { opacity: 0, duration: 0.35 }, 41.64);
 
 // 7
-cardIn("#s7", 50.0);
-push("#s7a", 50.4, 2.4, 0.35, 0.3, 1.3);
-fadeTo("#s7b", 52.9); push("#s7b", 52.9, 2.4, 0.5, 0.82, 1.5);
-fadeTo("#s7c", 55.4); push("#s7c", 55.4, 2.2, 0.62, 0.82, 1.5);
-fadeTo("#s7d", 57.7); push("#s7d", 57.7, 3, 0.76, 0.45, 1.45);
-tl.to("#s7", { opacity: 0, duration: 0.35 }, 60.65);
+cardIn("#s7", 41.9);
+push("#s7a", 42.19, 2.17, 0.35, 0.3, 1.3);
+fadeTo("#s7b", 44.45); push("#s7b", 44.45, 2.17, 0.5, 0.82, 1.5);
+fadeTo("#s7c", 46.71); push("#s7c", 46.71, 2, 0.62, 0.82, 1.5);
+fadeTo("#s7d", 48.8); push("#s7d", 48.8, 2.41, 0.76, 0.45, 1.45);
+tl.to("#s7", { opacity: 0, duration: 0.35 }, 51.18);
 
 // 8
-cardIn("#s8", 61.0);
-push("#s8a", 61.4, 2.4, 0.5, 0.92, 1.6);
-fadeTo("#s8b", 64.0); push("#s8b", 64.0, 2.4, 0.5, 0.35, 1.35);
-fadeTo("#s8c", 66.4); push("#s8c", 66.4, 2.4, 0.5, 0.32, 1.35);
-tl.fromTo("#s8m", { opacity: 0, y: 80, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 66.5);
-tl.to("#s8m", { y: -40, duration: 0.25, yoyo: true, repeat: 3, ease: "power2.out" }, 67.0);
-tl.to("#s8", { opacity: 0, duration: 0.35 }, 68.65);
+cardIn("#s8", 51.4);
+push("#s8a", 51.69, 2.17, 0.5, 0.92, 1.6);
+fadeTo("#s8b", 54.04); push("#s8b", 54.04, 2.17, 0.5, 0.35, 1.35);
+fadeTo("#s8c", 56.21); push("#s8c", 56.21, 1.76, 0.5, 0.32, 1.35);
+tl.fromTo("#s8m", { opacity: 0, y: 80, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 56.3);
+tl.to("#s8m", { y: -40, duration: 0.25, yoyo: true, repeat: 3, ease: "power2.out" }, 56.75);
+tl.to("#s8", { opacity: 0, duration: 0.35 }, 57.87);
 
 // 9
-tl.fromTo("#s9k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 69.3);
-tl.to(["#t-home", "#t-lib", "#t-stairs", "#t-ramp", "#t-elev"], { opacity: 0, duration: 0.3 }, 77.3);
-tl.fromTo("#s9card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 77.5);
-push("#s9img", 77.9, 2.2, 0.45, 0.55, 1.35);
-tl.to("#s9", { opacity: 0, duration: 0.35 }, 79.65);
+tl.fromTo("#s9k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 58.28);
+tl.to(["#t-home", "#t-lib", "#t-stairs", "#t-ramp", "#t-elev"], { opacity: 0, duration: 0.3 }, 65.46);
+tl.fromTo("#s9card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 65.64);
+push("#s9img", 66, 1.47, 0.45, 0.55, 1.35);
+tl.to("#s9", { opacity: 0, duration: 0.35 }, 67.17);
 
-// 10
-cardIn("#s10", 80.0);
-rise("#s10m1", 80.6, 0.5, 20);
-tl.fromTo("#s10vid", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: E }, 80.0);
-tl.to("#s10vid", { opacity: 0, duration: 0.4 }, 99.0);
-push("#s10hw", 80.6, 10.6, 0.88, 0.55, 1.12);
-tl.to("#s10m1", { opacity: 0, duration: 0.25 }, 91.2);
-fadeTo("#s10sw", 91.4, 0.15);
-tl.fromTo("#s10sw", { scale: 1.15, transformOrigin: "38% 86%" }, { scale: 1.5, duration: 3, ease: "power2.inOut" }, 91.4);
-rise("#s10m2", 91.6, 0.5, 20);
-tl.to("#s10", { opacity: 0, duration: 0.4 }, 99.0);
+// 10 · live footage, sped up: head mode, then sign mode
+cardIn("#s10", 67.4);
+rise("#s10m1", 67.8, 0.4, 20);
+tl.fromTo("#s10vid", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 67.4);
+push("#s10hw", 67.8, 6.6, 0.88, 0.55, 1.12);
+tl.to("#s10m1", { opacity: 0, duration: 0.2 }, 74.3);
+fadeTo("#s10sw", 74.5, 0.12);
+tl.fromTo("#s10sw", { scale: 1.15, transformOrigin: "38% 86%" }, { scale: 1.5, duration: 2, ease: "power2.inOut" }, 74.5);
+rise("#s10m2", 74.6, 0.4, 20);
+tl.to("#s10vid", { opacity: 0, duration: 0.3 }, 79.7);
+tl.to("#s10", { opacity: 0, duration: 0.3 }, 79.7);
 
 // 11
-tl.fromTo("#s11m", { y: -500, scaleY: 1.1 }, { y: 0, scaleY: 1, duration: 0.5, ease: "power2.in", transformOrigin: "50% 88%" }, 100.0);
-tl.to("#s11m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, transformOrigin: "50% 88%" }, 100.5);
-tl.to("#s11m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1,0.45)", transformOrigin: "50% 88%" }, 100.62);
-rise("#s11t", 100.8, 0.6);
-rise("#s11s", 101.3, 0.6);
-tl.fromTo("#s11b span", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: E, stagger: 0.08 }, 102.2);
+tl.fromTo("#s11m", { y: -500, scaleY: 1.1 }, { y: 0, scaleY: 1, duration: 0.45, ease: "power2.in", transformOrigin: "50% 88%" }, 80.4);
+tl.to("#s11m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, transformOrigin: "50% 88%" }, 80.85);
+tl.to("#s11m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1,0.45)", transformOrigin: "50% 88%" }, 80.97);
+rise("#s11t", 81.0, 0.5);
+rise("#s11s", 81.4, 0.5);
+tl.to("#s11 .center", { opacity: 0, scale: 0.97, duration: 0.4, ease: "power2.in" }, 84.6);
+
+// 12 · sponsor end card (10 s): title, cards in reading order, footer
+rise("#s12t", 85.1, 0.5);
+tl.fromTo(".sp", { opacity: 0, y: 40, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: E, stagger: 0.12 }, 85.4);
+rise("#s12f", 86.8, 0.5, 20);
+tl.fromTo(".spgrid", { scale: 1, transformOrigin: "50% 40%" }, { scale: 1.025, duration: 8.6, ease: "sine.inOut" }, 85.4);
+tl.to("#s12", { opacity: 0, duration: 0.5 }, 94.5);
 
 // ---------------------------------------------------------------- 3D (Three.js, drawn from time only)
 const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -413,7 +442,7 @@ const A = (() => {
     cam.lookAt(0, 30, 15);
     r.render(scene, cam);
   }
-  return { render, start: 38, end: 46.9 };
+  return { render, start: 38, end: 46.9, ns: 31.8, ne: 39.62 };
 })();
 
 // --- scene B: accessible route through a few city blocks
@@ -476,11 +505,11 @@ const Bs = (() => {
       el.style.opacity = t < 8.3 ? seg(t, show[id], show[id] + 0.4) : el.style.opacity;
     }
   }
-  return { render, start: 69, end: 77.9 };
+  return { render, start: 69, end: 77.9, ns: 58.1, ne: 66.0 };
 })();
 
 function renderAt(time) {
-  for (const S of [A, Bs]) if (time >= S.start - 0.05 && time <= S.end) S.render(time - S.start);
+  for (const S of [A, Bs]) if (time >= S.ns - 0.05 && time <= S.ne) S.render(((time - S.ns) / (S.ne - S.ns)) * (S.end - S.start));
 }
 window.addEventListener("hf-seek", (e) => renderAt(e.detail.time));
 renderAt(0); A.render(0); Bs.render(0);
