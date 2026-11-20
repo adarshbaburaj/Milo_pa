@@ -47,17 +47,18 @@ Check `GET /api/health` or Settings → API status for the live state.
 
 | Sponsor | Role in Milo | Status |
 |---|---|---|
-| Superlinked SIE | Open model (Qwen) for prediction/routing/drafting; reranking chairs against the needs profile | live when `SIE_API_KEY` set |
-| Anthropic Claude | LLM fallback | live when `ANTHROPIC_API_KEY` set |
-| ElevenLabs | Human voice for spoken replies and AAC | live when `ELEVENLABS_API_KEY` set |
-| Arcee | Small/large model tiers (OpenAI wire format) | adapter ready; mock without key |
-| Cognee | Phrase memory | mock (SQLite) |
-| Senso | Trusted chair specs + policy text | mock (`data/`) |
-| Airbyte | Denial email ingestion | mock (`data/inbox`) |
-| SingleStore | Cases + receipts | mock (SQLite) |
-| Persona | Verify the human before filing/paying | sandbox modal |
-| Firedrill | Strict reviewer simulation | rule-based reviewer fallback |
-| Amplitude / Statsig | Events + experiments | console + in-app Impact panel |
+| **Senso** | Trusted context layer: policy, denial letter and chair spec sheets are ingested; fit checks, coverage and every chat answer search Senso and cite the source in the receipt | ✅ live |
+| **Superlinked SIE** | Qwen on SIE is the brain (letter prediction, routing, appeal summary) + reranks chairs against the needs profile | ✅ live |
+| **Airbyte** | PyAirbyte runs the `source-file` connector to sync the inbox (denial email) into the agent's context | ✅ live |
+| **Amplitude** | Unified SDK: task steps + outcomes (`tool_completed`, `input_mode_used`, `suggestion_rank_chosen`, `moves_per_sentence`, `time_to_intent_ms`), autocapture, session replay | ✅ live (ingestion verified) |
+| **Statsig** | Agent settings as dynamic config (`milo_agent_settings`: dwell, prediction strategy A/B, suggestion count), gate `sign_mode_beta`, mirrored events | ✅ live |
+| **ElevenLabs** | Two human voices: Milo (Sarah) and the voice that speaks for the person (Lauren) | ✅ live |
+| **Claude (Anthropic)** | Grounded chat answers, fallback brain, photo measurement estimates (vision) | ✅ live |
+| **SingleStore** | Audit trail + case tracker mirrored for live SQL analytics and deadline queries | adapter ready — set `SINGLESTORE_URL` |
+| **Cognee** | Phrase memory | mock (SQLite) — key pending |
+| **Firedrill** | Strict reviewer simulation | rule-based fallback — sign-in pending |
+| **Persona** | Verify the human before filing/paying | sandbox modal |
+| **Google Maps** | Places accessibility + least-walking transit routes | Maps-link fallback — Maps key pending |
 
 ## How to run
 

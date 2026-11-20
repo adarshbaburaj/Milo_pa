@@ -49,6 +49,11 @@ _warm_tasks: list = []
 
 
 @app.on_event("startup")
+async def _warm_airbyte() -> None:
+    _warm_tasks.append(asyncio.create_task(airbyte.warm()))
+
+
+@app.on_event("startup")
 async def _warm_voices() -> None:
     """Warm both ElevenLabs voices so the first real phrase doesn't cold-start (~10 s once)."""
     if elevenlabs.status() != "live":
@@ -352,6 +357,18 @@ async def route_plan(body: dict) -> dict:
     return {**out["result"], "summary": out["summary"], "sponsorCalls": current_trace()["sponsorCalls"]}
 
 
+@app.post("/api/senso/seed")
+async def senso_seed() -> dict:
+    """Load Milo's trusted documents (policy, denial letter, chair spec sheets) into Senso."""
+    return await senso.seed()
+
+
+@app.post("/api/senso/ask")
+async def senso_ask(body: dict) -> dict:
+    start_trace()
+    return {"result": await senso.ask(body.get("question", "")), "sponsorCalls": current_trace()["sponsorCalls"]}
+
+
 # ---- memory -------------------------------------------------------------------
 
 
@@ -418,6 +435,13 @@ async def caregiver_decision(tok: str, body: CaregiverDecision) -> dict:
         raise HTTPException(404)
     broadcast("caregiver", r)
     return r
+
+
+@app.get("/api/insights")
+async def insights() -> dict:
+    """Live SQL over the audit trail in SingleStore (None when not configured)."""
+    data = await asyncio.to_thread(singlestore.insights)
+    return {"live": data is not None, "data": data}
 
 
 # ---- impact (real session numbers only) ---------------------------------------

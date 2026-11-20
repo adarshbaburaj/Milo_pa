@@ -7,12 +7,13 @@ import os
 import time
 
 import state
+from adapters import senso
 from adapters.base import configured, record_model, record_sponsor
 from tools import fit_check
 
 SYSTEM = """You are Milo, a calm, kind assistant for a person with limited movement (fictional demo user).
 Answer the question in at most 3 short sentences of plain, warm English (reading age ~12).
-Use ONLY the facts in CONTEXT. If the answer isn't there, say you don't know yet and suggest the next step in Milo.
+Use ONLY the facts in CONTEXT. Prefer "senso_trusted_context" (the verified documents) when it answers the question. If the answer isn't there, say you don't know yet and suggest the next step in Milo.
 Never give medical or legal advice; for health questions suggest asking their clinician.
 Never invent numbers, dates, prices or names. Quote numbers exactly as given, with their meaning:
 "overall_width_in" is the chair's width; doorway checks add 2 inches of hand clearance on top.
@@ -51,10 +52,16 @@ def _fallback(question: str) -> str:
 
 async def run(question: str) -> dict:
     ctx = _context()
+    trusted = await senso.ask(question)  # Senso trusted context (policy, denial, spec sheets) when live
+    if trusted:
+        ctx["senso_trusted_context"] = trusted
     evidence = [
         {"label": "Grounded in", "value": "profile, case tracker, fit check, policy summary", "source": "Milo data",
          "sourceType": "model", "live": False},
     ]
+    for c in (trusted or {}).get("citations", []):
+        evidence.append({"label": "Senso source", "value": f"{c.get('title')} — “{(c.get('text') or '')[:120]}…”",
+                         "source": f"senso:{c.get('content_id')}", "sourceType": "policy", "live": True})
     if not configured("ANTHROPIC_API_KEY"):
         return {"result": {"answer": _fallback(question)}, "evidence": evidence, "summary": _fallback(question)}
     import anthropic

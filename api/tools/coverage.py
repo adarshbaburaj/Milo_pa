@@ -70,7 +70,7 @@ async def run() -> dict:
         "costShare": {"pct": 20, "item": glide.get("name"), "priceUsd": price, "memberCostUsd": round(price * 0.2, 2),
                       "note": "after the deductible"},
     }
-    live = False
+    live = any(c["sponsor"] == "airbyte" and c["live"] for c in __import__("adapters.base", fromlist=["current_trace"]).current_trace()["sponsorCalls"])
     evidence = [
         {"label": "Denied item", "value": denial.get("item", ""), "source": "denial letter, para 2", "sourceType": "denial", "live": live},
         {"label": "Reason", "value": f"“{denial.get('reason', '')}”", "source": "denial letter, para 3", "sourceType": "denial", "live": live},

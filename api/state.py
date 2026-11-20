@@ -124,6 +124,9 @@ def update_case(**fields: Any) -> dict:
     cases = get_cases()
     cases[0].update(fields)
     kv_set("cases", cases)
+    from adapters import singlestore
+
+    singlestore.mirror_case(cases[0])
     return cases[0]
 
 
@@ -131,6 +134,9 @@ def update_case(**fields: Any) -> dict:
 
 
 def save_receipt(r: dict) -> None:
+    from adapters import singlestore  # mirror to SingleStore when configured (non-blocking)
+
+    singlestore.mirror_receipt(r)
     with _lock:
         _db.execute(
             "INSERT OR REPLACE INTO receipts (id, ts, body) VALUES (?,?,?)",
