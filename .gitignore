@@ -9,3 +9,4 @@ __pycache__/
 .pytest_cache/
 api/.milo.sqlite3*
 .DS_Store
+api/.cache/
