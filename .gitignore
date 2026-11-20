@@ -10,3 +10,8 @@ __pycache__/
 api/.milo.sqlite3*
 .DS_Store
 api/.cache/
+
+# video: raw screen recordings (too large for git) and local HyperFrames state
+video/recordings/
+video/film/.hyperframes/
+video/film/renders/

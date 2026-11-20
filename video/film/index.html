@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<style>
+  :root { --cream:#FBF7F0; --ink:#2B2118; --muted:#7A6A58; --milo:#F7C336; --accent:#C2410C; --ok:#1F7A4D; --bad:#C0392B; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1920px; height:1080px; overflow:hidden; background:var(--cream); font-family:Nunito, sans-serif; color:var(--ink); }
+  #bg { position:absolute; inset:0; background:
+      radial-gradient(900px 600px at 15% 10%, #FFF1C9 0%, transparent 60%),
+      radial-gradient(800px 700px at 90% 85%, #FDE3D3 0%, transparent 60%), var(--cream); }
+  .scene { position:absolute; inset:0; }
+  .center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  .big { font-weight:900; font-size:150px; letter-spacing:-0.035em; line-height:1.02; }
+  .mid { font-weight:800; font-size:64px; letter-spacing:-0.02em; }
+  .w { display:inline-block; }
+  .card { position:absolute; left:231px; top:108px; width:1458px; height:820px; border-radius:28px; overflow:hidden; background:#fff;
+          box-shadow:0 34px 90px rgba(90,60,10,.20), 0 0 0 1px rgba(60,40,10,.06); }
+  .shot { position:absolute; left:0; top:0; width:100%; height:100%; object-fit:cover; }
+  .kick { position:absolute; left:231px; top:30px; display:flex; align-items:center; gap:18px; font-weight:800; font-size:44px; letter-spacing:-0.01em; }
+  .kick b { display:inline-flex; width:56px; height:56px; border-radius:50%; background:var(--milo); align-items:center; justify-content:center; font-size:30px; font-weight:900; }
+  .cap { position:absolute; left:0; right:0; bottom:26px; display:flex; justify-content:center; }
+  .cap span { display:inline-block; max-width:1560px; font-weight:700; font-size:38px; line-height:1.25; padding:10px 28px; border-radius:18px;
+              background:rgba(255,255,255,.94); box-shadow:0 6px 24px rgba(90,60,10,.10); text-align:center; }
+  .chip { position:absolute; display:inline-flex; align-items:center; gap:14px; padding:18px 30px; border-radius:999px; background:#fff;
+          font-weight:800; font-size:40px; box-shadow:0 14px 40px rgba(90,60,10,.14); white-space:nowrap; }
+  .milo { position:absolute; }
+  .milo img { position:absolute; inset:0; width:100%; height:100%; }
+  .label3d { position:absolute; padding:16px 26px; border-radius:20px; background:#fff; font-weight:800; font-size:34px; line-height:1.2;
+             box-shadow:0 14px 40px rgba(90,60,10,.16); white-space:nowrap; }
+  .label3d small { display:block; font-size:30px; font-weight:700; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  .tag3d { position:absolute; transform:translate(-50%,-100%); padding:10px 18px; border-radius:14px; background:#fff; font-weight:800; font-size:32px;
+           box-shadow:0 10px 30px rgba(90,60,10,.18); white-space:nowrap; }
+  canvas.three { position:absolute; inset:0; width:1920px; height:1080px; }
+  .num { font-variant-numeric:tabular-nums; }
+  .strip { display:flex; flex-wrap:wrap; gap:14px 18px; justify-content:center; max-width:1500px; }
+  .strip span { padding:10px 22px; border-radius:999px; background:#fff; font-weight:700; font-size:30px; box-shadow:0 6px 18px rgba(90,60,10,.10); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="108" data-width="1920" data-height="1080">
+  <div id="bg"></div>
+
+  <!-- 1 · The question -->
+  <div id="s1" class="scene clip" data-start="0" data-duration="7" data-track-index="1">
+    <div class="center">
+      <div class="big"><span id="s1a" class="w">AI is for</span> <span id="s1b" class="w" style="color:var(--accent)">everyone.</span></div>
+      <div id="s1c" class="mid" style="margin-top:40px;color:var(--muted)">…is it, really?</div>
+    </div>
+  </div>
+
+  <!-- 2 · Who gets left out -->
+  <div id="s2" class="scene clip" data-start="7" data-duration="9" data-track-index="1">
+    <div class="center" style="justify-content:flex-start;padding-top:170px">
+      <div class="big num"><span id="s2n">0.0</span> billion</div>
+      <div id="s2t" class="mid" style="margin-top:22px;color:var(--muted)">people live with a disability</div>
+    </div>
+    <div id="s2c1" class="chip" style="left:250px;top:640px">can’t type</div>
+    <div id="s2c2" class="chip" style="left:660px;top:720px">can’t click</div>
+    <div id="s2c3" class="chip" style="left:1060px;top:640px">can’t speak</div>
+    <div id="s2c4" class="chip" style="left:1440px;top:720px">can’t hear</div>
+  </div>
+
+  <!-- 3 · Meet Milo -->
+  <div id="s3" class="scene clip" data-start="16" data-duration="8.5" data-track-index="1">
+    <div id="s3m" class="milo" style="left:760px;top:250px;width:400px;height:400px">
+      <img id="s3m-idle" src="assets/milo/idle.webp" alt="" />
+      <img id="s3m-happy" src="assets/milo/happy.webp" alt="" style="opacity:0" />
+    </div>
+    <div id="s3t" class="mid" style="position:absolute;left:0;right:0;top:110px;text-align:center;font-size:84px;font-weight:900">Meet Milo</div>
+    <div id="s3c1" class="chip" style="left:330px;top:330px">Type</div>
+    <div id="s3c2" class="chip" style="left:1300px;top:330px">Speak</div>
+    <div id="s3c3" class="chip" style="left:360px;top:640px">Head</div>
+    <div id="s3c4" class="chip" style="left:1300px;top:640px">Sign</div>
+  </div>
+
+  <!-- 4 · It asks what you need -->
+  <div id="s4" class="scene clip" data-start="24.5" data-duration="6.5" data-track-index="1">
+    <div class="kick" id="s4k"><b>1</b>It shapes itself around you</div>
+    <div class="card"><img id="s4a" class="shot" src="assets/app/needs.png" alt="" /><img id="s4b" class="shot" src="assets/app/plan.png" alt="" style="opacity:0" /></div>
+  </div>
+
+  <!-- 5 · First letters -->
+  <div id="s5" class="scene clip" data-start="31" data-duration="7" data-track-index="1">
+    <div class="kick" id="s5k"><b>2</b>A few letters is enough</div>
+    <div class="card"><img id="s5a" class="shot" src="assets/app/wwa.png" alt="" /><img id="s5b" class="shot" src="assets/app/wwa-answer.png" alt="" style="opacity:0" /></div>
+    <div id="s5l" style="position:absolute;right:120px;top:20px;display:flex;gap:16px">
+      <span id="s5l1" class="chip" style="position:relative;font-size:56px;padding:12px 30px">W</span>
+      <span id="s5l2" class="chip" style="position:relative;font-size:56px;padding:12px 30px">W</span>
+      <span id="s5l3" class="chip" style="position:relative;font-size:56px;padding:12px 30px">A</span>
+    </div>
+  </div>
+
+  <!-- 6 · It knows your chair (3D) -->
+  <div id="s6" class="scene clip" data-start="38" data-duration="12" data-track-index="1">
+    <canvas id="c3d1" class="three" width="1920" height="1080"></canvas>
+    <div class="kick" id="s6k"><b>3</b>It knows your chair and your home</div>
+    <div id="s6door" class="tag3d" style="left:960px;top:150px">doorway · 28″</div>
+    <div id="s6la" class="label3d" style="left:120px;top:380px">Standard manual chair<small>24.5″ wide</small><small class="ok">✓ fits through the 28″ door</small></div>
+    <div id="s6lb" class="label3d" style="left:1340px;top:380px">Power chair<small>29″ wide</small><small class="bad">✕ won’t fit: 29″ &gt; 28″</small></div>
+    <div id="s6card" class="card" style="opacity:0"><img id="s6img" class="shot" src="assets/app/fit-terra.png" alt="" /></div>
+  </div>
+
+  <!-- 7 · The paperwork -->
+  <div id="s7" class="scene clip" data-start="50" data-duration="11" data-track-index="1">
+    <div class="kick" id="s7k"><b>4</b>It fights the paperwork, with receipts</div>
+    <div class="card">
+      <img id="s7a" class="shot" src="assets/app/appeal-draft.png" alt="" />
+      <img id="s7b" class="shot" src="assets/app/appeal-review.png" alt="" style="opacity:0" />
+      <img id="s7c" class="shot" src="assets/app/appeal-v2.png" alt="" style="opacity:0" />
+      <img id="s7d" class="shot" src="assets/app/receipts.png" alt="" style="opacity:0" />
+    </div>
+  </div>
+
+  <!-- 8 · Safe shopping -->
+  <div id="s8" class="scene clip" data-start="61" data-duration="8" data-track-index="1">
+    <div class="kick" id="s8k"><b>5</b>Safe shopping, with family in the loop</div>
+    <div class="card">
+      <img id="s8a" class="shot" src="assets/app/shop-refuse.png" alt="" />
+      <img id="s8b" class="shot" src="assets/app/caregiver.png" alt="" style="opacity:0" />
+      <img id="s8c" class="shot" src="assets/app/caregiver-approved.png" alt="" style="opacity:0" />
+    </div>
+    <div id="s8m" class="milo" style="left:1580px;top:690px;width:230px;height:230px;opacity:0"><img src="assets/milo/celebrate.webp" alt="" /></div>
+  </div>
+
+  <!-- 9 · It gets you there (3D) -->
+  <div id="s9" class="scene clip" data-start="69" data-duration="11" data-track-index="1">
+    <canvas id="c3d2" class="three" width="1920" height="1080"></canvas>
+    <div class="kick" id="s9k"><b>6</b>A route your wheelchair can actually take</div>
+    <div id="t-home" class="tag3d">Home</div>
+    <div id="t-lib" class="tag3d">Library</div>
+    <div id="t-stairs" class="tag3d bad">✕ Stairs: avoided</div>
+    <div id="t-ramp" class="tag3d ok">✓ Curb ramp</div>
+    <div id="t-elev" class="tag3d ok">✓ Working elevator</div>
+    <div id="s9card" class="card" style="opacity:0"><img id="s9img" class="shot" src="assets/app/route.png" alt="" /></div>
+  </div>
+
+  <!-- 10 · The real thing (your recording goes in #rec) -->
+  <div id="s10" class="scene clip" data-start="80" data-duration="20" data-track-index="1">
+    <div class="kick" id="s10k"><b>●</b>Live: no hands, no voice</div>
+    <div id="s10slot" class="card" style="background:#FBF7F0"></div>
+    <div id="s10m1" class="chip" style="right:231px;left:auto;top:24px;font-size:34px;padding:12px 26px">Head mode · steering with the nose</div>
+    <div id="s10m2" class="chip" style="right:231px;left:auto;top:24px;font-size:34px;padding:12px 26px;opacity:0">Sign mode · fingerspell, then sign YES</div>
+  </div>
+
+  <!-- 10 · live footage (root level so the frame extractor can time it); frame matches .card -->
+  <div id="s10vid" class="card" style="background:transparent;box-shadow:none;opacity:0;z-index:2">
+    <div id="s10hw" class="shot" data-layout-allow-overflow><video id="s10head" class="clip shot" data-start="80" data-duration="11.5" data-track-index="2" src="assets/live/head.mp4" muted playsinline></video></div>
+    <div id="s10sw" class="shot" data-layout-allow-overflow style="opacity:0"><video id="s10sign" class="clip shot" data-start="91.4" data-duration="8" data-track-index="3" src="assets/live/sign.mp4" muted playsinline></video></div>
+  </div>
+
+  <!-- 11 · Close -->
+  <div id="s11" class="scene clip" data-start="100" data-duration="8" data-track-index="1">
+    <div class="center" style="justify-content:flex-start;padding-top:120px">
+      <div id="s11m" class="milo" style="position:relative;width:300px;height:300px"><img src="assets/milo/happy.webp" alt="" /></div>
+      <div id="s11t" class="big" style="font-size:120px;margin-top:20px">Milo</div>
+      <div id="s11s" class="mid" style="color:var(--accent);margin-top:6px">AI that’s actually for everyone.</div>
+      <div id="s11b" class="strip" style="margin-top:56px">
+        <span>Claude</span><span>Qwen on SIE</span><span>ElevenLabs</span><span>Senso</span><span>Cognee</span><span>Airbyte</span><span>Superlinked</span><span>Amplitude</span><span>Statsig</span><span>MediaPipe</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- captions (every spoken line) -->
+  <div id="cap1" class="cap clip" data-start="1" data-duration="4.4" data-track-index="5"><span>AI is supposed to be for everyone. But is it, really?</span></div>
+  <div id="cap2" class="cap clip" data-start="7.5" data-duration="7.9" data-track-index="5"><span>Most apps assume you can type, click, talk and hear. More than a billion people can’t do all of those.</span></div>
+  <div id="cap3" class="cap clip" data-start="16.4" data-duration="7" data-track-index="5"><span>Meet Milo. A personal agent you can use with your keyboard, your voice, your head, or your hands.</span></div>
+  <div id="cap4" class="cap clip" data-start="24.8" data-duration="5.4" data-track-index="5"><span>First, Milo asks what’s hard for you, and reshapes itself around you.</span></div>
+  <div id="cap5" class="cap clip" data-start="31.3" data-duration="5.9" data-track-index="5"><span>Spell just the first letters. Milo predicts the rest, and asks before it acts.</span></div>
+  <div id="cap6" class="cap clip" data-start="38.5" data-duration="8" data-track-index="5"><span>Milo knows your body, your chair, and your home. It checks every chair against your narrowest door, before you ever buy it.</span></div>
+  <div id="cap7" class="cap clip" data-start="50.3" data-duration="9.6" data-track-index="5"><span>Denied by insurance? Milo drafts the appeal, a strict reviewer checks it, and Milo files it. With a receipt for every single step.</span></div>
+  <div id="cap8" class="cap clip" data-start="61.3" data-duration="6.2" data-track-index="5"><span>It won’t let you buy a chair that won’t fit. And anything big goes to your caregiver first.</span></div>
+  <div id="cap9" class="cap clip" data-start="69.5" data-duration="8.8" data-track-index="5"><span>And when you go out, Milo plans a route your wheelchair can actually take. No stairs. Real ramps. Working elevators.</span></div>
+  <div id="cap10" class="cap clip" data-start="80.5" data-duration="6.4" data-track-index="5"><span>This is Milo, live. No hands. No voice. Just a nose, and a nod.</span></div>
+  <div id="cap11" class="cap clip" data-start="100.5" data-duration="3.6" data-track-index="5"><span>Milo. AI that’s actually for everyone.</span></div>
+
+  <!-- voice -->
+  <audio id="vo1" class="clip" data-start="1" data-track-index="10" data-volume="1" data-duration="4.05" src="assets/vo/vo01.mp3"></audio>
+  <audio id="vo2" class="clip" data-start="7.5" data-track-index="10" data-volume="1" data-duration="7.65" src="assets/vo/vo02.mp3"></audio>
+  <audio id="vo3" class="clip" data-start="16.4" data-track-index="10" data-volume="1" data-duration="6.69" src="assets/vo/vo03.mp3"></audio>
+  <audio id="vo4" class="clip" data-start="24.8" data-track-index="10" data-volume="1" data-duration="5.01" src="assets/vo/vo04.mp3"></audio>
+  <audio id="vo5" class="clip" data-start="31.3" data-track-index="10" data-volume="1" data-duration="5.51" src="assets/vo/vo05.mp3"></audio>
+  <audio id="vo6" class="clip" data-start="38.5" data-track-index="10" data-volume="1" data-duration="7.65" src="assets/vo/vo06.mp3"></audio>
+  <audio id="vo7" class="clip" data-start="50.3" data-track-index="10" data-volume="1" data-duration="9.25" src="assets/vo/vo07.mp3"></audio>
+  <audio id="vo8" class="clip" data-start="61.3" data-track-index="10" data-volume="1" data-duration="5.85" src="assets/vo/vo08.mp3"></audio>
+  <audio id="vo9" class="clip" data-start="69.5" data-track-index="10" data-volume="1" data-duration="8.49" src="assets/vo/vo09.mp3"></audio>
+  <audio id="vo10" class="clip" data-start="80.5" data-track-index="10" data-volume="1" data-duration="6.08" src="assets/vo/vo10.mp3"></audio>
+  <audio id="vo11" class="clip" data-start="100.5" data-track-index="10" data-volume="1" data-duration="3.21" src="assets/vo/vo11.mp3"></audio>
+  <!-- music + sound -->
+  <audio id="music" class="clip" data-start="0" data-duration="108" data-track-index="11" data-volume="0.32" data-fade-in="1.5" data-fade-out="3" src="assets/music.wav"></audio>
+  <audio id="fx-pop1" class="clip" data-start="16.5" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
+  <audio id="fx-t1" class="clip" data-start="31.5" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-t2" class="clip" data-start="31.9" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-t3" class="clip" data-start="32.3" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-thud" class="clip" data-start="44" data-track-index="12" data-volume="0.55" data-duration="0.35" src="assets/sfx/thud.wav"></audio>
+  <audio id="fx-spark1" class="clip" data-start="66.6" data-track-index="12" data-volume="0.45" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-w1" class="clip" data-start="24.3" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w2" class="clip" data-start="49.8" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w3" class="clip" data-start="68.8" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-w4" class="clip" data-start="79.6" data-track-index="12" data-volume="0.3" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-t4" class="clip" data-start="89.2" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-spark3" class="clip" data-start="90.0" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-w5" class="clip" data-start="91.2" data-track-index="12" data-volume="0.25" data-duration="0.75" src="assets/sfx/whoosh.wav"></audio>
+  <audio id="fx-t5" class="clip" data-start="95.4" data-track-index="12" data-volume="0.45" data-duration="0.17" src="assets/sfx/tick.wav"></audio>
+  <audio id="fx-spark4" class="clip" data-start="96.4" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+  <audio id="fx-pop2" class="clip" data-start="100.3" data-track-index="12" data-volume="0.5" data-duration="0.4" src="assets/sfx/pop.wav"></audio>
+  <audio id="fx-spark2" class="clip" data-start="101" data-track-index="12" data-volume="0.4" data-duration="0.95" src="assets/sfx/sparkle.wav"></audio>
+</div>
+
+<script>
+const tl = gsap.timeline({ paused: true });
+const E = "power3.out";
+const rise = (sel, at, d = 0.6, y = 40) => tl.fromTo(sel, { opacity: 0, y }, { opacity: 1, y: 0, duration: d, ease: E }, at);
+const pop = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, at);
+const fadeTo = (sel, at, d = 0.45) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d, ease: "power2.inOut" }, at);
+// slow camera push on a screenshot toward a focus point (fractions of the frame)
+const push = (sel, at, d, fx, fy, z = 1.35) =>
+  tl.fromTo(sel, { scale: 1, transformOrigin: fx * 100 + "% " + fy * 100 + "%" }, { scale: z, duration: d, ease: "power2.inOut" }, at);
+const cardIn = (sceneSel, at) => {
+  const sc = document.querySelector(sceneSel);
+  tl.fromTo(sc.querySelector(".card"), { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: E }, at);
+  tl.fromTo(sc.querySelector(".kick"), { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, at + 0.15);
+};
+
+// captions: soft fade in each
+document.querySelectorAll(".cap").forEach((el) => {
+  tl.fromTo(el.querySelector("span"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: E }, parseFloat(el.dataset.start));
+});
+
+// 1
+tl.fromTo("#s1b", { opacity: 0, y: 50, rotate: 0 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 0.65);
+tl.to("#s1b", { rotate: -4, duration: 0.18, yoyo: true, repeat: 3, ease: "sine.inOut", transformOrigin: "50% 60%" }, 3.6);
+rise("#s1c", 3.4, 0.7);
+tl.to("#s1b", { opacity: 0.35, duration: 0.6 }, 4.4);
+tl.to("#s1 .center", { opacity: 0, scale: 0.96, duration: 0.5, ease: "power2.in" }, 6.4);
+
+// 2
+const counter = { v: 0 };
+tl.fromTo(counter, { v: 0 }, { v: 1.3, duration: 2.2, ease: "power2.out", onUpdate: () => (document.querySelector("#s2n").textContent = counter.v.toFixed(1)) }, 7.3);
+rise("#s2 .big", 7.1, 0.6);
+rise("#s2t", 8.2, 0.6);
+["#s2c1", "#s2c2", "#s2c3", "#s2c4"].forEach((s, i) => pop(s, 10.4 + i * 0.45));
+tl.to("#s2 .chip", { y: -10, duration: 1.2, yoyo: true, repeat: 2, ease: "sine.inOut", stagger: 0.15 }, 12.4);
+tl.to("#s2", { opacity: 0, duration: 0.45 }, 15.5);
+
+// 3 — Milo hops in, then the four ways to talk orbit in
+tl.fromTo("#s3m", { y: -700, scaleY: 1.1, scaleX: 0.92 }, { y: 0, scaleY: 1, scaleX: 1, duration: 0.55, ease: "power2.in", transformOrigin: "50% 88%" }, 16.0);
+tl.to("#s3m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, ease: "power1.out", transformOrigin: "50% 88%" }, 16.55);
+tl.to("#s3m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 88%" }, 16.67);
+tl.set("#s3m-happy", { opacity: 1 }, 16.6);
+tl.set("#s3m-happy", { opacity: 0 }, 18.2);
+rise("#s3t", 16.9, 0.6);
+[["#s3c1", -260, 0], ["#s3c2", 260, 0], ["#s3c3", -260, 0], ["#s3c4", 260, 0]].forEach(([s, x], i) =>
+  tl.fromTo(s, { opacity: 0, x: -x * 0.0 + (x > 0 ? -340 : 340), scale: 0.5 }, { opacity: 1, x: 0, scale: 1, duration: 0.7, ease: "back.out(1.6)" }, 19.4 + i * 0.55));
+tl.to("#s3m", { scaleY: 1.025, scaleX: 0.99, duration: 1.4, yoyo: true, repeat: 2, ease: "sine.inOut", transformOrigin: "50% 88%" }, 18.8);
+tl.to("#s3", { opacity: 0, duration: 0.45 }, 24.05);
+
+// 4
+cardIn("#s4", 24.5);
+push("#s4a", 25.0, 2.6, 0.3, 0.62, 1.3);
+fadeTo("#s4b", 27.6);
+push("#s4b", 27.6, 3.2, 0.36, 0.45, 1.3);
+tl.to("#s4", { opacity: 0, duration: 0.35 }, 30.65);
+
+// 5
+cardIn("#s5", 31.0);
+["#s5l1", "#s5l2", "#s5l3"].forEach((s, i) => pop(s, 31.5 + i * 0.4));
+push("#s5a", 32.2, 2.4, 0.55, 0.88, 1.6);
+fadeTo("#s5b", 34.7);
+push("#s5b", 34.7, 3, 0.55, 0.28, 1.45);
+tl.to("#s5", { opacity: 0, duration: 0.35 }, 37.65);
+
+// 6 — 3D labels, then the real page
+tl.fromTo("#s6k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 38.3);
+pop("#s6door", 38.8);
+rise("#s6la", 40.4);
+rise("#s6lb", 44.0);
+tl.to(["#s6la", "#s6lb", "#s6door"], { opacity: 0, duration: 0.3 }, 46.3);
+tl.fromTo("#s6card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 46.5);
+push("#s6img", 46.9, 3, 0.4, 0.62, 1.4);
+tl.to("#s6", { opacity: 0, duration: 0.35 }, 49.65);
+
+// 7
+cardIn("#s7", 50.0);
+push("#s7a", 50.4, 2.4, 0.35, 0.3, 1.3);
+fadeTo("#s7b", 52.9); push("#s7b", 52.9, 2.4, 0.5, 0.82, 1.5);
+fadeTo("#s7c", 55.4); push("#s7c", 55.4, 2.2, 0.62, 0.82, 1.5);
+fadeTo("#s7d", 57.7); push("#s7d", 57.7, 3, 0.76, 0.45, 1.45);
+tl.to("#s7", { opacity: 0, duration: 0.35 }, 60.65);
+
+// 8
+cardIn("#s8", 61.0);
+push("#s8a", 61.4, 2.4, 0.5, 0.92, 1.6);
+fadeTo("#s8b", 64.0); push("#s8b", 64.0, 2.4, 0.5, 0.35, 1.35);
+fadeTo("#s8c", 66.4); push("#s8c", 66.4, 2.4, 0.5, 0.32, 1.35);
+tl.fromTo("#s8m", { opacity: 0, y: 80, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 66.5);
+tl.to("#s8m", { y: -40, duration: 0.25, yoyo: true, repeat: 3, ease: "power2.out" }, 67.0);
+tl.to("#s8", { opacity: 0, duration: 0.35 }, 68.65);
+
+// 9
+tl.fromTo("#s9k", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 69.3);
+tl.to(["#t-home", "#t-lib", "#t-stairs", "#t-ramp", "#t-elev"], { opacity: 0, duration: 0.3 }, 77.3);
+tl.fromTo("#s9card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E }, 77.5);
+push("#s9img", 77.9, 2.2, 0.45, 0.55, 1.35);
+tl.to("#s9", { opacity: 0, duration: 0.35 }, 79.65);
+
+// 10
+cardIn("#s10", 80.0);
+rise("#s10m1", 80.6, 0.5, 20);
+tl.fromTo("#s10vid", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: E }, 80.0);
+tl.to("#s10vid", { opacity: 0, duration: 0.4 }, 99.0);
+push("#s10hw", 80.6, 10.6, 0.88, 0.55, 1.12);
+tl.to("#s10m1", { opacity: 0, duration: 0.25 }, 91.2);
+fadeTo("#s10sw", 91.4, 0.15);
+tl.fromTo("#s10sw", { scale: 1.15, transformOrigin: "38% 86%" }, { scale: 1.5, duration: 3, ease: "power2.inOut" }, 91.4);
+rise("#s10m2", 91.6, 0.5, 20);
+tl.to("#s10", { opacity: 0, duration: 0.4 }, 99.0);
+
+// 11
+tl.fromTo("#s11m", { y: -500, scaleY: 1.1 }, { y: 0, scaleY: 1, duration: 0.5, ease: "power2.in", transformOrigin: "50% 88%" }, 100.0);
+tl.to("#s11m", { scaleY: 0.86, scaleX: 1.12, duration: 0.12, transformOrigin: "50% 88%" }, 100.5);
+tl.to("#s11m", { scaleY: 1, scaleX: 1, duration: 0.5, ease: "elastic.out(1,0.45)", transformOrigin: "50% 88%" }, 100.62);
+rise("#s11t", 100.8, 0.6);
+rise("#s11s", 101.3, 0.6);
+tl.fromTo("#s11b span", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: E, stagger: 0.08 }, 102.2);
+
+// ---------------------------------------------------------------- 3D (Three.js, drawn from time only)
+const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const outE = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1 - x, 3));
+const seg = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+const lerp = (a, b, k) => a + (b - a) * k;
+const CREAM = 0xfbf7f0;
+
+function mkRenderer(id) {
+  const r = new THREE.WebGLRenderer({ canvas: document.getElementById(id), antialias: true, preserveDrawingBuffer: true });
+  r.setPixelRatio(1); r.setSize(1920, 1080, false);
+  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.outputEncoding = THREE.sRGBEncoding;
+  return r;
+}
+function lights(scene, at) {
+  scene.add(new THREE.HemisphereLight(0xfff6e5, 0xe8dcc8, 0.75));
+  const d = new THREE.DirectionalLight(0xfff0d8, 0.85);
+  d.position.set(at.x, at.y, at.z); d.castShadow = true;
+  d.shadow.mapSize.set(2048, 2048); d.shadow.radius = 6;
+  Object.assign(d.shadow.camera, { left: -260, right: 260, top: 260, bottom: -260, near: 1, far: 900 });
+  scene.add(d);
+}
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.65, metalness: 0.05, ...o });
+function box(w, h, d, m, x, y, z) {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  b.position.set(x, y, z); b.castShadow = true; b.receiveShadow = true; return b;
+}
+
+// --- scene A: two chairs and a 28″ doorway (units: inches)
+const A = (() => {
+  const r = mkRenderer("c3d1"), scene = new THREE.Scene();
+  scene.background = new THREE.Color(CREAM); scene.fog = new THREE.Fog(CREAM, 260, 520);
+  const cam = new THREE.PerspectiveCamera(34, 1920 / 1080, 1, 2000);
+  lights(scene, { x: 120, y: 220, z: 160 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(1200, 1200), mat(0xf4ece0));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  const wallM = mat(0xe6d3b8);
+  scene.add(box(130, 90, 5, wallM, -14 - 65, 45, 0), box(130, 90, 5, wallM, 14 + 65, 45, 0), box(28, 10, 5, wallM, 0, 85, 0));
+  const frameM = mat(0xd9c3a3); const frameL = box(2.2, 80, 7, frameM, -14.6, 40, 0), frameR = box(2.2, 80, 7, frameM.clone(), 14.6, 40, 0);
+  frameR.material = frameL.material; scene.add(frameL, frameR);
+  function chair(width, color, power) {
+    const g = new THREE.Group(), fm = mat(color, { roughness: 0.4, metalness: 0.3 }), tire = mat(0x2b2b30, { roughness: 0.9 }), seat = mat(power ? 0x3a3f4f : 0x2c5a52);
+    const wheels = [];
+    const R = power ? 8 : 12;
+    for (const s of [-1, 1]) {
+      const w = new THREE.Mesh(new THREE.TorusGeometry(R, power ? 2.6 : 1.3, 12, 40), tire);
+      w.rotation.y = Math.PI / 2; w.position.set(s * (width / 2 - (power ? 2.6 : 1.3)), R + (power ? 2.6 : 1.3), power ? 0 : -4); w.castShadow = true;
+      g.add(w); wheels.push(w);
+      if (!power) { const rim = new THREE.Mesh(new THREE.TorusGeometry(R - 2, 0.5, 8, 40), fm); rim.rotation.y = Math.PI / 2; rim.position.copy(w.position); rim.position.x += s * -1.2; g.add(rim); }
+      const caster = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 1.5, 20), tire); caster.rotation.z = Math.PI / 2; caster.position.set(s * (width / 2 - 5), 2.5, 14); g.add(caster);
+    }
+    if (power) g.add(box(width - 8, 9, 30, mat(0x50566a), 0, 11, 2));
+    g.add(box(width - 6, 3, 18, seat, 0, power ? 20 : 19, 2));
+    g.add(box(width - 6, 18, 2.5, seat, 0, power ? 31 : 30, -8));
+    for (const s of [-1, 1]) {
+      g.add(box(1.4, 30, 1.4, fm, s * (width / 2 - 4.2), 20, -9));
+      g.add(box(1.4, 1.4, 24, fm, s * (width / 2 - 4.2), 18, 3));
+      g.add(box(1.4, 14, 1.4, fm, s * (width / 2 - 6), 9, 15));
+    }
+    g.add(box(width - 12, 1.2, 6, fm, 0, 4, 18));
+    g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    scene.add(g);
+    return { g, wheels, R };
+  }
+  const a = chair(24.5, 0x2f7d6d, false), b = chair(29, 0x6b6f80, true);
+  a.g.rotation.y = Math.PI; b.g.rotation.y = Math.PI; // face the door (−z)
+  const red = new THREE.Color(0xc0392b), wood = new THREE.Color(0xd9c3a3);
+  function render(t) {
+    // chair A rolls through: z 90 → −70
+    const ka = ease(seg(t, 0.4, 3.9)), za = lerp(95, -70, ka);
+    a.g.position.set(0, 0, za); a.wheels.forEach((w) => (w.rotation.x = -(95 - za) / a.R));
+    // chair B approaches and stops at the frame, small bump back
+    const kb = outE(seg(t, 4.2, 6.0)); let zb = lerp(110, 22, kb);
+    const bump = seg(t, 6.0, 6.5); zb += Math.sin(bump * Math.PI) * 3;
+    b.g.position.set(0, 0, zb); b.wheels.forEach((w) => (w.rotation.x = -(110 - zb) / b.R));
+    b.g.visible = t > 4.0;
+    const hit = seg(t, 5.95, 6.25) * (1 - seg(t, 7.6, 8.3) * 0.0);
+    frameL.material.color.copy(wood).lerp(red, hit);
+    frameL.material.emissive = new THREE.Color(0x400000).multiplyScalar(hit);
+    // camera: slow arc from front-right to front-left
+    const c = ease(seg(t, 0, 8.5));
+    cam.position.set(lerp(150, -120, c), lerp(120, 105, c), lerp(250, 235, c));
+    cam.lookAt(0, 30, 15);
+    r.render(scene, cam);
+  }
+  return { render, start: 38, end: 46.9 };
+})();
+
+// --- scene B: accessible route through a few city blocks
+const Bs = (() => {
+  const r = mkRenderer("c3d2"), scene = new THREE.Scene();
+  scene.background = new THREE.Color(CREAM); scene.fog = new THREE.Fog(CREAM, 420, 900);
+  const cam = new THREE.PerspectiveCamera(38, 1920 / 1080, 1, 3000);
+  lights(scene, { x: 160, y: 320, z: 120 });
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), mat(0xf6f0e6)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  // seeded buildings on a block grid, leaving streets at x,z = ±80, 0
+  let s = 11; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const pal = [0xf4d7b5, 0xead2c4, 0xd8e6dc, 0xf2e2b4, 0xe3dcef];
+  for (let gx = -3; gx <= 2; gx++) for (let gz = -3; gz <= 2; gz++) {
+    const cx = gx * 80 + 40, cz = gz * 80 + 40;
+    for (let i = 0; i < 4; i++) {
+      const w = 22 + rnd() * 8, d = 22 + rnd() * 8, h = 5 + rnd() * 16;
+      const ox = (i % 2 ? 1 : -1) * 16, oz = (i < 2 ? 1 : -1) * 16;
+      scene.add(box(w, h, d, mat(pal[Math.floor(rnd() * pal.length)]), cx + ox, h / 2, cz + oz));
+    }
+    const pave = new THREE.Mesh(new THREE.PlaneGeometry(68, 68), mat(0xece3d4)); pave.rotation.x = -Math.PI / 2; pave.position.set(cx, 0.2, cz); pave.receiveShadow = true; scene.add(pave);
+  }
+  // the route (along the streets) — home (−120,120) → library (40,−120)
+  const P = [[-120, 125], [-120, 80], [-118, 2], [-80, 0], [-2, 0], [0, -40], [2, -78], [40, -80], [40, -125]].map(([x, z]) => new THREE.Vector3(x, 1.5, z));
+  const curve = new THREE.CatmullRomCurve3(P, false, "centripetal");
+  const tube = new THREE.TubeGeometry(curve, 400, 5, 12, false);
+  const route = new THREE.Mesh(tube, new THREE.MeshStandardMaterial({ color: 0xe8590c, emissive: 0xe8590c, emissiveIntensity: 0.35, roughness: 0.4 }));
+  scene.add(route);
+  const total = tube.index.count;
+  // the shortcut with stairs (rejected): dashed red
+  const sc = new THREE.CatmullRomCurve3([new THREE.Vector3(-120, 1.5, 80), new THREE.Vector3(-40, 1.5, 40), new THREE.Vector3(0, 1.5, -40)]);
+  const scLine = new THREE.Mesh(new THREE.TubeGeometry(sc, 100, 1.8, 8, false), new THREE.MeshStandardMaterial({ color: 0xc0392b, transparent: true, opacity: 0.0 }));
+  scene.add(scLine);
+  const stairs = new THREE.Group(); for (let i = 0; i < 5; i++) stairs.add(box(16, 2 + i * 2.2, 4, mat(0xc9b9a3), 0, (2 + i * 2.2) / 2, i * 4 - 8)); stairs.position.set(-60, 0, 30); stairs.rotation.y = -0.5; scene.add(stairs);
+  const ramp = new THREE.Mesh(new THREE.BoxGeometry(16, 1.5, 18), mat(0x2fa36b)); ramp.position.set(-118, 1, 40); ramp.rotation.x = 0.12; scene.add(ramp);
+  const elev = box(12, 30, 12, new THREE.MeshStandardMaterial({ color: 0x5cbf95, transparent: true, opacity: 0.85, roughness: 0.2 }), 12, 15, -78); scene.add(elev);
+  const dot = new THREE.Mesh(new THREE.SphereGeometry(9, 32, 16), mat(0xf7c336, { emissive: 0xf7c336, emissiveIntensity: 0.25 })); dot.castShadow = true; scene.add(dot);
+  const pin = (x, z, c) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(4, 0.5, 14, 20), mat(c)); m.position.set(x, 9, z); scene.add(m); return m; };
+  pin(-120, 125, 0xc2410c); pin(40, -125, 0x1f7a4d);
+  const tags = { "t-home": new THREE.Vector3(-120, 22, 125), "t-lib": new THREE.Vector3(40, 22, -125), "t-stairs": new THREE.Vector3(-40, 26, 0), "t-ramp": new THREE.Vector3(-118, 10, 40), "t-elev": new THREE.Vector3(12, 36, -78) };
+  const show = { "t-home": 0.6, "t-lib": 0.9, "t-stairs": 2.4, "t-ramp": 3.2, "t-elev": 6.2 };
+  const v = new THREE.Vector3();
+  function render(t) {
+    const k = ease(seg(t, 1.6, 7.6));
+    tube.setDrawRange(0, Math.floor((total * k) / 3) * 3);
+    dot.position.copy(curve.getPointAt(Math.min(0.999, Math.max(0.001, k)))); dot.position.y = 9;
+    dot.visible = k > 0.002;
+    scLine.material.opacity = 0.55 * seg(t, 1.9, 2.5) * (1 - 0.5 * seg(t, 3.5, 4.5));
+    // camera: top-down → tilted three-quarter, gently orbiting
+    const c = ease(seg(t, 0, 3.2)), o = seg(t, 0, 8.6) * 0.35;
+    const rad = lerp(10, 300, c), ang = 0.5 + o, h = lerp(620, 360, c);
+    cam.position.set(Math.sin(ang) * rad - 40, h, Math.cos(ang) * rad);
+    cam.lookAt(-40, 0, 0);
+    cam.updateMatrixWorld();
+    r.render(scene, cam);
+    for (const id in tags) {
+      v.copy(tags[id]).project(cam);
+      const el = document.getElementById(id);
+      el.style.left = ((v.x + 1) / 2) * 1920 + "px";
+      el.style.top = ((1 - v.y) / 2) * 1080 + "px";
+      el.style.opacity = t < 8.3 ? seg(t, show[id], show[id] + 0.4) : el.style.opacity;
+    }
+  }
+  return { render, start: 69, end: 77.9 };
+})();
+
+function renderAt(time) {
+  for (const S of [A, Bs]) if (time >= S.start - 0.05 && time <= S.end) S.render(time - S.start);
+}
+window.addEventListener("hf-seek", (e) => renderAt(e.detail.time));
+renderAt(0); A.render(0); Bs.render(0);
+
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
