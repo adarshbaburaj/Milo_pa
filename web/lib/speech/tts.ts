@@ -94,8 +94,16 @@ function speakEleven(text: string, opts: SpeakOpts): Promise<boolean> {
 /** Speak text in a human voice (ElevenLabs), falling back to the browser voice. Resolves when finished. */
 export async function speak(text: string, opts: SpeakOpts = {}): Promise<void> {
   if (!text) return;
-  if (await speakEleven(text, opts)) return;
-  return speakBrowser(text, opts);
+  const cap = { text, who: opts.who ?? "milo" } as const;
+  useApp.getState().setCaption(cap);
+  try {
+    if (await speakEleven(text, opts)) return;
+    return await speakBrowser(text, opts);
+  } finally {
+    setTimeout(() => {
+      if (useApp.getState().caption === cap) useApp.getState().setCaption(null);
+    }, 1200);
+  }
 }
 
 /** Browser voice; Milo's mouth moves on word boundaries. Resolves when finished. */

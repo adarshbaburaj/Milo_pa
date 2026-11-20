@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Calibrate } from "@/components/input/Calibrate";
+import { MeasureEditor } from "@/components/measure/MeasureEditor";
 import { api } from "@/lib/api";
 import { events } from "@/lib/analytics";
 import { DEFAULT_SETTINGS, useApp } from "@/lib/store";
@@ -61,6 +62,26 @@ export default function SettingsPage() {
   return (
     <div>
       <PageTitle emoji="⚙️" title="Settings" />
+
+      <Section title="Accessibility">
+        <PropertyRow label="My needs">
+          <div className="flex flex-wrap items-center gap-2">
+            {(s.needs?.length ? s.needs : ["none picked"]).map((n) => <Chip key={n}>{n}</Chip>)}
+            <Button onClick={() => { set({ onboarded: false }); location.assign("/welcome"); }}>Redo setup</Button>
+          </div>
+        </PropertyRow>
+        <PropertyRow label="Captions"><Switch label="Captions" checked={s.captions} onChange={(b) => set({ captions: b })} /></PropertyRow>
+        <PropertyRow label="Visual alerts"><Switch label="Visual alerts" checked={s.visualAlerts} onChange={(b) => set({ visualAlerts: b })} /></PropertyRow>
+        <PropertyRow label="Read everything aloud"><Switch label="Read everything aloud" checked={s.readEverything} onChange={(b) => set({ readEverything: b })} /></PropertyRow>
+        <PropertyRow label="Simple mode"><Switch label="Simple mode" checked={s.simpleMode} onChange={(b) => set({ simpleMode: b })} /></PropertyRow>
+        <PropertyRow label="Switch scanning"><Switch label="Switch scanning" checked={s.scanning} onChange={(b) => set({ scanning: b })} /></PropertyRow>
+        <PropertyRow label="Scan speed"><Range label="Scan speed" value={s.scanMs} min={800} max={4000} step={100} onChange={(n) => set({ scanMs: n })} fmt={(n) => `${(n / 1000).toFixed(1)} s per option`} /></PropertyRow>
+        <PropertyRow label="Hover to choose"><Switch label="Hover to choose (eye-gaze, trackball)" checked={s.hoverDwell} onChange={(b) => set({ hoverDwell: b })} /></PropertyRow>
+      </Section>
+
+      <Section title="Measurements">
+        <MeasureEditor />
+      </Section>
 
       <Section title="Input modes">
         <div className="flex flex-wrap gap-2">

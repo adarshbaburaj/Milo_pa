@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Armchair, FileText, MessageCircle, ShoppingBag } from "lucide-react";
+import { Armchair, Ear, FileText, MessageCircle, ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Milo } from "@/components/milo/Milo";
@@ -61,6 +61,13 @@ export default function Home() {
     { icon: ShoppingBag, title: "Shop", sub: "Checkout done for you", tone: "bg-surface-alt text-ink", on: () => router.push("/shop") },
   ];
 
+  const settings = useApp((s) => s.settings);
+  const deaf = settings.needs?.includes("deaf");
+  let actions = ACTIONS;
+  if (deaf) actions = [actions[0], { icon: Ear, title: "Listen to someone", sub: "Live captions of people talking to you", tone: "bg-info-soft text-info", on: () => router.push("/listen") }, ...actions.slice(1)];
+  if (settings.simpleMode) actions = actions.filter((a) => ["Say something", "My appeal", "Listen to someone"].includes(a.title));
+  if (!settings.inputModes.includes("head")) actions = actions.map((a) => (a.title === "Say something" ? { ...a, on: () => useApp.getState().setMode(settings.inputModes.includes("sign") ? "sign" : "text"), sub: "Type or tap phrases — Milo says it out loud" } : a));
+
   return (
     <div>
       {/* Milo + speech bubble */}
@@ -86,7 +93,7 @@ export default function Home() {
 
       {/* Big action cards */}
       <section aria-label="What would you like to do" className="grid grid-cols-2 gap-4">
-        {ACTIONS.map(({ icon: Icon, title, sub, tone, on }) => (
+        {actions.map(({ icon: Icon, title, sub, tone, on }) => (
           <button
             key={title}
             onClick={on}

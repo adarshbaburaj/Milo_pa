@@ -56,7 +56,7 @@ export function VerifyModal() {
     v.resolve(ok);
   };
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4" role="dialog" aria-modal="true" aria-labelledby="verify-title">
+    <div data-scan-scope className="fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4" role="dialog" aria-modal="true" aria-labelledby="verify-title">
       <div className="w-full max-w-md rounded-lg bg-bg p-6 shadow-soft">
         <div className="mb-2 flex items-center gap-2">
           <ShieldCheck size={20} strokeWidth={1.75} className="text-success" aria-hidden />

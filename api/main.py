@@ -27,7 +27,7 @@ from models import (  # noqa: E402
     ActRequest, CaregiverDecision, CaregiverRequest, PhraseRequest, PredictRequest, RouteRequest,
     VerifyStartRequest,
 )
-from tools import appeal, caregiver, coverage, fit_check, shop, speak, status  # noqa: E402
+from tools import appeal, caregiver, coverage, fit_check, measure, shop, speak, status  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("milo")
@@ -294,6 +294,21 @@ async def appeal_view() -> dict:
     vs = state.kv_get("appeal_versions", [])
     return {"latest": vs[-1] if vs else None, "versions": [{"version": v["version"], "createdAt": v["createdAt"]} for v in vs],
             "case": state.get_case()}
+
+
+# ---- measurements ------------------------------------------------------------
+
+
+@app.post("/api/measure/photo")
+async def measure_photo(body: dict) -> dict:
+    start_trace()
+    img = str(body.get("image", ""))
+    media = "image/jpeg"
+    if img.startswith("data:"):
+        media, img = img[5:].split(";base64,", 1)
+    out = await measure.estimate(img, media, body.get("target", "doorway"), body.get("reference", "card"))
+    out["sponsorCalls"] = current_trace()["sponsorCalls"]
+    return out
 
 
 # ---- memory -------------------------------------------------------------------

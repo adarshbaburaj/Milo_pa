@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Armchair, FileText, Home, LifeBuoy, PanelLeftClose, PanelLeftOpen, Receipt, Settings, ShoppingBag } from "lucide-react";
+import { Armchair, Ear, FileText, Home, LifeBuoy, PanelLeftClose, PanelLeftOpen, Receipt, Settings, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Milo } from "@/components/milo/Milo";
 import { openConfirm } from "@/lib/agent";
@@ -10,6 +10,7 @@ import { Chip } from "./index";
 
 const NAV = [
   { href: "/", icon: Home, label: "Home" },
+  { href: "/listen", icon: Ear, label: "Listen to someone" },
   { href: "/fit", icon: Armchair, label: "Chairs that fit" },
   { href: "/appeal", icon: FileText, label: "My appeal" },
   { href: "/shop", icon: ShoppingBag, label: "Shop" },
@@ -34,6 +35,10 @@ export function Sidebar() {
   const path = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const demo = useApp((s) => s.settings.demoMode);
+  const simple = useApp((s) => s.settings.simpleMode);
+  const deaf = useApp((s) => s.settings.needs?.includes("deaf"));
+  // Simple mode: only the essentials. "Listen" shows for Deaf / hard-of-hearing users (and in full mode).
+  const nav = NAV.filter((n) => (simple ? ["/", "/appeal", "/settings"].includes(n.href) || (deaf && n.href === "/listen") : true));
   const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
   return (
@@ -55,7 +60,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-1.5" aria-label="Main">
-        {NAV.map(({ href, icon: Icon, label }) => {
+        {nav.map(({ href, icon: Icon, label }) => {
           const active = isActive(href);
           return (
             <Link

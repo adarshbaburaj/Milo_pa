@@ -27,7 +27,8 @@ let sentenceStart = 0;
 const st = () => useApp.getState();
 
 function shouldSpeak(mode: InputMode) {
-  return st().settings.voiceOutput && mode !== "text";
+  const set = st().settings;
+  return set.voiceOutput && (mode !== "text" || set.readEverything);
 }
 
 function firstSentence(s: string) {

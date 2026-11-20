@@ -72,6 +72,7 @@ export interface Profile {
   memberId: string;
   caregiver: { name: string; relation: string; approvalOverUsd: number };
   inputModes: InputMode[];
+  measured?: Record<string, string>; // key → Source
 }
 
 export interface Chair {

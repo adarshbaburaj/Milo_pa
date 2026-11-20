@@ -10,12 +10,13 @@ import { LiveRegion, SpeakOverlay, VerifyModal } from "@/components/ui/Overlays"
 import { Sidebar } from "@/components/ui/Sidebar";
 import { Dock } from "@/components/input/Dock";
 import { DirectorPanel } from "@/components/DirectorPanel";
+import { Captions, HoverDwell, Scanner, VisualAlert } from "@/components/access/Access";
 import { onCaregiverDecision, registerNavigate } from "@/lib/agent";
 import { API_URL, api } from "@/lib/api";
 import { setPhrases } from "@/lib/phrasesLocal";
 import { useApp } from "@/lib/store";
 
-const NO_CHROME = ["/welcome", "/caregiver"];
+const NO_CHROME = ["/welcome", "/caregiver", "/measure"];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -123,6 +124,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       <SpeakOverlay />
       <VerifyModal />
       <DirectorPanel />
+      <Scanner />
+      <HoverDwell />
+      <Captions />
+      <VisualAlert />
       <LiveRegion />
     </div>
   );

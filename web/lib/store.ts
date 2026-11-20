@@ -20,6 +20,15 @@ export interface Settings {
   caregiverContact: string;
   demoMode: boolean;
   onboarded: boolean;
+  /** functional needs picked in onboarding (never diagnoses) */
+  needs: string[];
+  captions: boolean; // show what Milo says as on-screen captions
+  visualAlerts: boolean; // flash instead of relying on sound
+  simpleMode: boolean; // fewer options, plain words, one thing at a time
+  scanning: boolean; // switch scanning: options light up in turn; any key/switch selects
+  scanMs: number;
+  hoverDwell: boolean; // pointer / eye-gaze hover selects after dwellMs
+  readEverything: boolean; // speak replies in every mode, incl. typing
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -36,6 +45,14 @@ export const DEFAULT_SETTINGS: Settings = {
   caregiverContact: "Alex (brother)",
   demoMode: false,
   onboarded: false,
+  needs: [],
+  captions: true,
+  visualAlerts: false,
+  simpleMode: false,
+  scanning: false,
+  scanMs: 1600,
+  hoverDwell: false,
+  readEverything: false,
 };
 
 function loadSettings(): Settings {
@@ -128,6 +145,9 @@ interface AppState {
 
   lastSaving: { moves: number; saved: number; text: string } | null;
 
+  caption: { text: string; who: "user" | "milo" } | null;
+  setCaption: (c: { text: string; who: "user" | "milo" } | null) => void;
+
   dataVersion: number; // bump to make pages refetch (case/appeal changed)
   bumpData: () => void;
 }
@@ -187,6 +207,9 @@ export const useApp = create<AppState>((set, get) => ({
   announce: (s) => set({ announcement: s }),
 
   lastSaving: null,
+
+  caption: null,
+  setCaption: (c) => set({ caption: c }),
 
   dataVersion: 0,
   bumpData: () => set({ dataVersion: get().dataVersion + 1 }),

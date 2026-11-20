@@ -188,12 +188,14 @@ function VoiceInput() {
       return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
     };
     const down = (e: KeyboardEvent) => {
+      if (useApp.getState().settings.scanning) return; // Space is the scan switch
       if (e.code === "Space" && !e.repeat && !isField(e.target) && (e.target as HTMLElement)?.tagName !== "BUTTON") {
         e.preventDefault();
         start();
       }
     };
     const up = (e: KeyboardEvent) => {
+      if (useApp.getState().settings.scanning) return;
       if (e.code === "Space" && !isField(e.target) && (e.target as HTMLElement)?.tagName !== "BUTTON") {
         e.preventDefault();
         stop();

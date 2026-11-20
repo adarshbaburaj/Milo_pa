@@ -38,6 +38,7 @@ export function ConfirmBar() {
       {confirm && (
         <motion.div
           role="dialog"
+          data-scan-scope
           aria-modal="false"
           aria-label="Confirm action"
           initial={{ opacity: 0, y: 16 }}

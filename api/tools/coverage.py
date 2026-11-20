@@ -48,11 +48,17 @@ async def run() -> dict:
     profile = state.get_profile()
     glide = state.get_chair("glide-p2") or {}
     price = glide.get("priceUsd", 0)
+    measured = profile.get("measured") or {}
+    names = {"hipWidthIn": "hip width", "narrowestDoorwayIn": "doorway", "hallwayTurnSpaceIn": "hallway",
+             "transferHeightIn": "seat height", "canSelfPropelFt": "push distance"}
+    shaky = [names.get(k, k) for k, v in measured.items() if v in ("estimated", "photo", "current_chair")]
     requirements = [
         {"label": "Can't functionally self-propel a manual chair at home", "clause": "§4.2(a)", "status": "evidence",
          "evidence": f"Self-propel limit about {profile['canSelfPropelFt']} ft (profile); fit check shows manual chairs fail propulsion"},
         {"label": "Home allows the device (doorways, turning space)", "clause": "§4.2(b)", "status": "evidence",
          "evidence": f"Narrowest door {profile['home']['narrowestDoorwayIn']}″, hallway turn space {profile['home']['hallwayTurnSpaceIn']}″ (profile)"},
+        *([{"label": "Confirm estimated measurements (" + ", ".join(shaky) + ")", "clause": "§4.2(b)", "status": "needed",
+             "evidence": "Estimated in Milo — a home assessment or clinician should measure"}] if shaky else []),
         {"label": "Face-to-face exam note (within 45 days)", "clause": "§4.2(c)", "status": "needed", "evidence": "Ask the treating clinician"},
         {"label": "Signed clinician statement", "clause": "§4.2(c)", "status": "needed", "evidence": "Placeholder in the appeal draft"},
         {"label": "Prior authorisation", "clause": "§4.2(d)", "status": "needed", "evidence": "Requested as part of the appeal"},

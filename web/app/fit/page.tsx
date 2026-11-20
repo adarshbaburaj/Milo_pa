@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useApp } from "@/lib/store";
 import type { FitResult, Profile } from "@/lib/types";
-import { Chip, PageTitle, Table } from "@/components/ui";
+import Link from "next/link";
+import { MEASURES, SOURCE_LABEL, TRUSTED } from "@/lib/measurements";
+import { Callout, Chip, PageTitle, Table } from "@/components/ui";
 
 export default function FitPage() {
   const [data, setData] = useState<{ profile: Profile; items: FitResult[] } | null>(null);
@@ -24,6 +26,18 @@ export default function FitPage() {
           p ? `Checked against your measurements: ${p.home.narrowestDoorwayName} ${p.home.narrowestDoorwayIn}″, hips ${p.hipWidthIn}″, hallway ${p.home.hallwayTurnSpaceIn}″.` : "Checked against your measurements."
         }
       />
+      {p && (() => {
+        const shaky = MEASURES.filter((m) => !TRUSTED.includes(((p.measured || {})[m.key] as any) || "demo"));
+        return shaky.length ? (
+          <Callout emoji="📏" tone="warning" className="mb-6">
+            <div className="font-semibold">Some measurements are estimates</div>
+            <div className="text-[15px]">
+              {shaky.map((m) => `${m.label} (${SOURCE_LABEL[((p.measured || {})[m.key] as keyof typeof SOURCE_LABEL)]})`).join(" · ")}. Results may change once a helper or clinician measures.{" "}
+              <Link href="/settings" className="font-semibold text-accent underline" data-head-target>Update measurements</Link>
+            </div>
+          </Callout>
+        ) : null;
+      })()}
       {err && <p className="text-muted">Can’t reach Milo’s API. Is it running on port 8000?</p>}
       {data && (
         <Table head={["Name", "Fits?", "Why", "Price"]} caption="Wheelchairs checked against your measurements">
