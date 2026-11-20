@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Lexend, Newsreader } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
+import { Amplitude } from "./amplitude";
+import MyStatsig from "./my-statsig";
 import "./globals.css";
 
 // Lexend was designed to improve reading proficiency — a good fit for Milo's users.
@@ -16,7 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${lexend.variable} ${newsreader.variable}`}>
       <body className="font-sans">
-        <AppShell>{children}</AppShell>
+        <Amplitude />
+        <MyStatsig>
+          <AppShell>{children}</AppShell>
+        </MyStatsig>
       </body>
     </html>
   );

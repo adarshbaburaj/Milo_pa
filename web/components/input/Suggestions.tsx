@@ -1,6 +1,7 @@
 "use client";
 import { chooseSuggestion, noneOfThese } from "@/lib/agent";
 import { useApp } from "@/lib/store";
+import { remote } from "@/lib/remoteConfig";
 import type { InputMode } from "@/lib/types";
 import { Chip, Tile } from "@/components/ui";
 
@@ -15,7 +16,7 @@ export function Suggestions({ mode, compact = false }: { mode: InputMode; compac
   return (
     <div>
       <div className={`grid gap-3 ${compact ? "grid-cols-5" : "grid-cols-5"}`} role="group" aria-label="Suggestions">
-        {sugg.slice(0, 4).map((s, i) => (
+        {sugg.slice(0, remote.suggestionCount).map((s, i) => (
           <Tile
             key={s.text + i}
             label={`Suggestion ${i + 1}: ${s.text}${s.kind === "task" ? " (task)" : ""}`}

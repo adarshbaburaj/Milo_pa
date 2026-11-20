@@ -6,6 +6,7 @@ import { clearLetters, handleVoiceConfirm, lettersToString, submitUtterance } fr
 import { STT, sttAvailable } from "@/lib/speech/stt";
 import { stopSpeaking } from "@/lib/speech/tts";
 import { useApp } from "@/lib/store";
+import { remote } from "@/lib/remoteConfig";
 import type { InputMode } from "@/lib/types";
 import { Suggestions } from "./Suggestions";
 
@@ -65,7 +66,7 @@ export function Dock() {
       )}
       <div className="flex min-h-[72px] items-end gap-3 rounded-[36px] border-2 border-border bg-surface p-2 shadow-lift focus-within:border-accent/50">
         <div role="radiogroup" aria-label="Input mode" className="flex shrink-0 gap-1 self-center rounded-full bg-surface-alt p-1">
-          {MODES.map((m) => (
+          {MODES.filter((m) => m.mode !== "sign" || remote.signBeta).map((m) => (
             <button
               key={m.mode}
               role="radio"

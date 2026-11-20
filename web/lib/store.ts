@@ -150,6 +150,7 @@ interface AppState {
   caption: { text: string; who: "user" | "milo" } | null;
   setCaption: (c: { text: string; who: "user" | "milo" } | null) => void;
 
+  remoteVersion: number;
   dataVersion: number; // bump to make pages refetch (case/appeal changed)
   bumpData: () => void;
 }
@@ -213,6 +214,7 @@ export const useApp = create<AppState>((set, get) => ({
   caption: null,
   setCaption: (c) => set({ caption: c }),
 
+  remoteVersion: 0,
   dataVersion: 0,
   bumpData: () => set({ dataVersion: get().dataVersion + 1 }),
 }));

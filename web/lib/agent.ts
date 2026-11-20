@@ -3,7 +3,7 @@
 // InputEvent → normalise → (partial? → predict → pick) → route → confirm → tool → respond → receipt → Milo → TTS
 import { milo } from "@/components/milo/useMilo";
 import { api, uid } from "./api";
-import { track } from "./analytics";
+import { predictionStrategy, track } from "./analytics";
 import { looksLikeLetters, predictLocal } from "./phrasesLocal";
 import { speak } from "./speech/tts";
 import { chime, notify, soften } from "./sounds";
@@ -105,7 +105,7 @@ function refreshSuggestions(letters: string[]) {
     milo.set("thinking", true);
     try {
       const res = await api<{ suggestions: Suggestion[]; model: ModelCall | null; source: string }>("/api/predict", {
-        json: { letters: s, mode: lastInputMode, context: { strategy: "context" } },
+        json: { letters: s, mode: lastInputMode, context: { strategy: predictionStrategy() } },
         timeoutMs: 6000,
       });
       if (seq === predictSeq && res.suggestions?.length) {
@@ -128,7 +128,7 @@ export async function chooseSuggestion(s: Suggestion, rank: number, mode: InputM
   const moves = letters.length + 1; // letters + the pick
   const alternatives = st().suggestions;
   const predictModel = st().predictModel;
-  track("suggestion_rank_chosen", { rank, mode });
+  track("suggestion_rank_chosen", { rank, mode, strategy: predictionStrategy(), value: rank });
   track("moves_per_sentence", { moves, mode, letters: s.text.length });
   track("time_to_intent_ms", { ms: Math.round(performance.now() - sentenceStart), mode });
   api("/api/memory/phrase", { json: { text: s.text, kind: s.kind, tool: s.tool } }).catch(() => {});
