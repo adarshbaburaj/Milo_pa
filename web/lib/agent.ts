@@ -352,7 +352,7 @@ export async function act(p: PendingConfirm, confirmed: boolean | null, confirmM
   if (p.tool === "speak" && confirmed) {
     st().setSpoken(p.utterance);
     milo.set("speaking", true);
-    await speak(p.utterance, { volume: 1, rate: Math.max(0.6, (st().settings.voiceRate || 1) * 0.9) });
+    await speak(p.utterance, { who: "user", volume: 1, rate: Math.max(0.6, (st().settings.voiceRate || 1) * 0.9) });
     setTimeout(() => st().setSpoken(null), 1200);
     miloMessage(`Said: “${p.utterance}”`, { receiptId: res.receipt_id });
     return;
