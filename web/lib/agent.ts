@@ -15,11 +15,12 @@ export function registerNavigate(fn: (href: string) => void) {
   navigate = fn;
 }
 
-const READ_ONLY = new Set<ToolName>(["fit_check", "status", "coverage"]);
+const READ_ONLY = new Set<ToolName>(["fit_check", "status", "coverage", "chat", "route"]);
 const LINK_LABEL: Record<string, string> = {
   "/fit": "Open Fit Check",
   "/appeal": "Open Coverage & Appeal",
   "/shop": "Open Shop",
+  "/route": "Open route",
 };
 
 let lastInputMode: InputMode = "text";
@@ -377,6 +378,7 @@ export async function act(p: PendingConfirm, confirmed: boolean | null, confirmM
   if (res.link && p.tool !== "status" && p.tool !== "speak" && confirmed !== false) {
     // navigate to the result page for richer views
     if (p.tool === "fit_check" || p.tool === "appeal" || p.tool === "coverage") navigate(res.link);
+    if (p.tool === "route") navigate(`/route?to=${encodeURIComponent(args.destination || "")}`);
   }
 }
 

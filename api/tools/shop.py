@@ -6,6 +6,7 @@ from typing import Optional
 
 import state
 from adapters import persona
+from tools import fit_check
 
 
 def _summary(item_id: str) -> dict:
@@ -37,6 +38,17 @@ def run(action: str, item_id: Optional[str], args: dict, confirmed: bool) -> dic
         {"label": "Estimated coverage", "value": "80% if the appeal is approved", "source": "policy §4.3(a)", "sourceType": "policy", "live": False},
         {"label": "Ship to", "value": f"{s['shipping']['name']}, {s['shipping']['city']}", "source": "profile", "sourceType": "profile", "live": False},
     ]
+    # Safety first: never buy a chair that won't fit through her doors or that she can't transfer into safely.
+    fit = fit_check.check_chair(chair, state.get_profile())
+    for c in fit["checks"]:
+        ev.append({"label": f"Fit · {c['rule']}", "value": ("✅ " if c["pass"] else "❌ ") + c["detail"],
+                   "source": f"fit_check:{chair['id']}", "sourceType": "profile", "live": False})
+    if not fit["fits"] and not args.get("override"):
+        reasons = "; ".join(c["detail"] for c in fit["checks"] if not c["pass"])
+        return {"result": {"status": "doesnt_fit", "failed": fit["failed"], **s}, "evidence": ev,
+                "summary": f"I didn't order the {chair['name']} — it won't work for you: {reasons}. "
+                           "The Glide P2 and Comet Mid-Wheel both fit.", "link": "/fit"}
+
     if action == "cart":
         cart = [chair["id"]]
         state.kv_set("cart", cart)

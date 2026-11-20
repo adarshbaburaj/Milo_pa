@@ -9,6 +9,7 @@ from tools import fit_check  # noqa: E402
 EXPECTED_FAILS = {
     "basic-manual": {"Seat width", "Propulsion"},
     "aero-m1": {"Propulsion"},
+    "std-manual-18": {"Propulsion"},
     "glide-p2": set(),
     "nimbus-p3": {"Seat width"},
     "terra-hd": {"Doorway", "Turning"},

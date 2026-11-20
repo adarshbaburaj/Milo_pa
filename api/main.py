@@ -15,7 +15,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 from fastapi import FastAPI, HTTPException, Request  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
-from fastapi.responses import StreamingResponse  # noqa: E402
+from fastapi.responses import Response, StreamingResponse  # noqa: E402
 
 import engine  # noqa: E402
 import state  # noqa: E402
@@ -27,7 +27,8 @@ from models import (  # noqa: E402
     ActRequest, CaregiverDecision, CaregiverRequest, PhraseRequest, PredictRequest, RouteRequest,
     VerifyStartRequest,
 )
-from tools import appeal, caregiver, coverage, fit_check, measure, shop, speak, status  # noqa: E402
+from tools import appeal, caregiver, chat, coverage, fit_check, measure, shop, speak, status  # noqa: E402
+from tools import route as route_tool  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("milo")
@@ -198,6 +199,10 @@ async def run_tool(tool: str, args: dict, confirmed: bool) -> dict:
         return status.run(args.get("topic", "appeal"))
     if tool == "speak":
         return speak.run(args.get("text", ""))
+    if tool == "chat":
+        return await chat.run(args.get("question") or args.get("text") or "")
+    if tool == "route":
+        return await route_tool.run(args.get("destination") or "", args.get("origin"))
     if tool == "shop":
         return shop.run(args.get("action", "cart"), args.get("item") or args.get("item_id"), args, confirmed)
     if tool == "caregiver":
@@ -330,6 +335,21 @@ async def measure_photo(body: dict) -> dict:
     out = await measure.estimate(img, media, body.get("target", "doorway"), body.get("reference", "card"))
     out["sponsorCalls"] = current_trace()["sponsorCalls"]
     return out
+
+
+@app.get("/api/directions/map")
+async def route_map(origin: str, destination: str, polyline: str = "") -> Response:
+    img = await route_tool.static_map(polyline or None, origin, destination)
+    if not img:
+        raise HTTPException(404, "map unavailable")
+    return Response(content=img, media_type="image/png", headers={"Cache-Control": "max-age=600"})
+
+
+@app.post("/api/directions")
+async def route_plan(body: dict) -> dict:
+    start_trace()
+    out = await route_tool.run(body.get("destination", ""), body.get("origin"))
+    return {**out["result"], "summary": out["summary"], "sponsorCalls": current_trace()["sponsorCalls"]}
 
 
 # ---- memory -------------------------------------------------------------------

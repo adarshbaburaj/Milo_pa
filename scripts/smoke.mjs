@@ -176,6 +176,24 @@ await step("head mode Esc leaves it", async () => {
   await page.keyboard.press("Escape");
   await page.getByRole("radio", { name: /Type/, checked: true }).waitFor({ timeout: 5000 });
 });
+await step("chat question gets a clean grounded answer", async () => {
+  await page.goto(`${BASE}/`);
+  await page.getByLabel("Message Milo").fill("how wide is the Glide?");
+  await page.keyboard.press("Enter");
+  await page.getByText(/24\.5 inches/).first().waitFor({ timeout: 30000 });
+});
+await step("shop refuses a chair that doesn't fit", async () => {
+  await page.getByLabel("Message Milo").fill("order the Terra HD");
+  await page.keyboard.press("Enter");
+  await yes();
+  await page.getByText(/I didn’t order the Terra|I didn't order the Terra/).first().waitFor({ timeout: 20000 });
+});
+await step("route: get there page plans (fallback ok)", async () => {
+  await page.goto(`${BASE}/route`);
+  await page.getByLabel("Where to?").fill("Oakland Public Library Main Library");
+  await page.getByRole("button", { name: /Plan route/ }).click();
+  await page.getByRole("link", { name: /Open in Google Maps/ }).waitFor({ timeout: 40000 });
+});
 for (const p of ["/settings", "/listen", "/measure", "/receipts"]) {
   await step(`page ${p} renders`, async () => {
     await page.goto(`${BASE}${p}`);

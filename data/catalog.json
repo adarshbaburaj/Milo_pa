@@ -1,10 +1,104 @@
 [
-  {"id":"basic-manual","name":"Basic Standard Manual","type":"manual","overallWidthIn":25,"seatWidthIn":16,"seatToFloorIn":19.5,"turningRadiusIn":null,"priceUsd":289,"insurerDefault":true,"emoji":"🦽"},
-  {"id":"aero-m1","name":"Aero M1 Lightweight","type":"manual","overallWidthIn":24,"seatWidthIn":18,"seatToFloorIn":20,"turningRadiusIn":null,"priceUsd":1450,"emoji":"🦽"},
-  {"id":"glide-p2","name":"Glide P2 Mid-Wheel","type":"power","overallWidthIn":24.5,"seatWidthIn":18,"seatToFloorIn":20,"turningRadiusIn":20,"priceUsd":3890,"emoji":"🪑"},
-  {"id":"nimbus-p3","name":"Nimbus Compact P3","type":"power","overallWidthIn":23.5,"seatWidthIn":17,"seatToFloorIn":20,"turningRadiusIn":19,"priceUsd":3200,"emoji":"🪑"},
-  {"id":"terra-hd","name":"Terra HD Power","type":"power","overallWidthIn":27,"seatWidthIn":20,"seatToFloorIn":20.5,"turningRadiusIn":26,"priceUsd":5400,"emoji":"🪑"},
-  {"id":"urban-fold","name":"Urban Fold Power","type":"power","overallWidthIn":24,"seatWidthIn":19,"seatToFloorIn":22,"turningRadiusIn":22,"priceUsd":2750,"emoji":"🪑"},
-  {"id":"comet-mw","name":"Comet Mid-Wheel","type":"power","overallWidthIn":25.5,"seatWidthIn":20,"seatToFloorIn":19,"turningRadiusIn":21,"priceUsd":4100,"emoji":"🪑"},
-  {"id":"strider-rw","name":"Strider Rear-Wheel","type":"power","overallWidthIn":25,"seatWidthIn":19,"seatToFloorIn":20,"turningRadiusIn":29,"priceUsd":3650,"emoji":"🪑"}
+ {
+  "id": "basic-manual",
+  "name": "Basic Standard Manual",
+  "type": "manual",
+  "overallWidthIn": 25,
+  "seatWidthIn": 16,
+  "seatToFloorIn": 19.5,
+  "turningRadiusIn": null,
+  "priceUsd": 289,
+  "insurerDefault": true,
+  "emoji": "🦽"
+ },
+ {
+  "id": "std-manual-18",
+  "name": "Standard Adult Manual (18″) — most common",
+  "type": "manual",
+  "overallWidthIn": 25,
+  "seatWidthIn": 18,
+  "seatToFloorIn": 19.5,
+  "turningRadiusIn": null,
+  "priceUsd": 350,
+  "emoji": "🦽",
+  "reference": true,
+  "note": "Typical sizes of the most common wheelchair: a standard adult folding manual chair (seat 18″ wide, ~25″ overall, seat height ~19.5″, ~36–42 lb)."
+ },
+ {
+  "id": "aero-m1",
+  "name": "Aero M1 Lightweight",
+  "type": "manual",
+  "overallWidthIn": 24,
+  "seatWidthIn": 18,
+  "seatToFloorIn": 20,
+  "turningRadiusIn": null,
+  "priceUsd": 1450,
+  "emoji": "🦽"
+ },
+ {
+  "id": "glide-p2",
+  "name": "Glide P2 Mid-Wheel",
+  "type": "power",
+  "overallWidthIn": 24.5,
+  "seatWidthIn": 18,
+  "seatToFloorIn": 20,
+  "turningRadiusIn": 20,
+  "priceUsd": 3890,
+  "emoji": "🪑"
+ },
+ {
+  "id": "nimbus-p3",
+  "name": "Nimbus Compact P3",
+  "type": "power",
+  "overallWidthIn": 23.5,
+  "seatWidthIn": 17,
+  "seatToFloorIn": 20,
+  "turningRadiusIn": 19,
+  "priceUsd": 3200,
+  "emoji": "🪑"
+ },
+ {
+  "id": "terra-hd",
+  "name": "Terra HD Power",
+  "type": "power",
+  "overallWidthIn": 27,
+  "seatWidthIn": 20,
+  "seatToFloorIn": 20.5,
+  "turningRadiusIn": 26,
+  "priceUsd": 5400,
+  "emoji": "🪑"
+ },
+ {
+  "id": "urban-fold",
+  "name": "Urban Fold Power",
+  "type": "power",
+  "overallWidthIn": 24,
+  "seatWidthIn": 19,
+  "seatToFloorIn": 22,
+  "turningRadiusIn": 22,
+  "priceUsd": 2750,
+  "emoji": "🪑"
+ },
+ {
+  "id": "comet-mw",
+  "name": "Comet Mid-Wheel",
+  "type": "power",
+  "overallWidthIn": 25.5,
+  "seatWidthIn": 20,
+  "seatToFloorIn": 19,
+  "turningRadiusIn": 21,
+  "priceUsd": 4100,
+  "emoji": "🪑"
+ },
+ {
+  "id": "strider-rw",
+  "name": "Strider Rear-Wheel",
+  "type": "power",
+  "overallWidthIn": 25,
+  "seatWidthIn": 19,
+  "seatToFloorIn": 20,
+  "turningRadiusIn": 29,
+  "priceUsd": 3650,
+  "emoji": "🪑"
+ }
 ]

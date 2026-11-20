@@ -128,7 +128,6 @@ async def _claude(tier: Tier, messages: list[dict], json_mode: bool, max_tokens:
                 max_tokens=max_tokens,
                 system=system or anthropic.NOT_GIVEN,
                 messages=convo,
-                temperature=0.2,
             ), timeout=timeout)
             text = "".join(b.text for b in msg.content if b.type == "text")
             u = msg.usage

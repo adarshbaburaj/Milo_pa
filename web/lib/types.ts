@@ -1,5 +1,5 @@
 export type InputMode = "text" | "voice" | "head" | "sign";
-export type ToolName = "fit_check" | "coverage" | "appeal" | "shop" | "caregiver" | "status" | "speak";
+export type ToolName = "fit_check" | "coverage" | "appeal" | "shop" | "caregiver" | "status" | "speak" | "chat" | "route";
 
 export interface InputEvent {
   id: string;

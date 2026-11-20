@@ -20,8 +20,8 @@ PROMPTS = Path(__file__).resolve().parent / "prompts"
 
 STOPWORDS = {"my", "the", "a", "an", "to", "of", "is", "if", "for", "in", "on", "at", "it", "me", "does", "did"}
 
-TOOLS = {"fit_check", "coverage", "appeal", "shop", "caregiver", "status", "speak"}
-READ_ONLY = {"fit_check", "status", "coverage"}
+TOOLS = {"fit_check", "coverage", "appeal", "shop", "caregiver", "status", "speak", "chat", "route"}
+READ_ONLY = {"fit_check", "status", "coverage", "chat", "route"}
 
 CHAIR_KEYWORDS = {
     "basic": "basic-manual", "standard": "basic-manual",
@@ -211,8 +211,16 @@ def route_local(utterance: str) -> dict:
         args = {"item": chair} if chair else {}
         name = (state.get_chair(chair) or {}).get("name") if chair else None
         return task("fit_check", args, f"Check whether the {name} fits your home?" if name else "Check which chairs fit your home?")
+    if re.search(r"\b(route|directions|get to|way to|how do i get|take me to|navigate)\b", t):
+        dest = re.split(r"\b(?:to|towards)\b", utterance, maxsplit=1)[-1].strip(" ?.") if re.search(r"\bto\b", t) else ""
+        return task("route", {"destination": dest}, "Plan an accessible route?")
     if re.search(r"\b(where|status|when|deadline|receipts?)\b", t):
         return task("status", {"topic": "appeal"}, "Look up your status?")
+    # questions to Milo (not statements for people nearby) get a real answer
+    if t.endswith("?") or re.match(r"^(what|how|why|who|which|can you|could you|do you|does|is|are|should|tell me|explain|help)\b", t):
+        if not re.match(r"^(can|could) (you|someone) (help|get|bring|open|call|pass)", t) or t.startswith("can you explain"):
+            return {"kind": "chat", "tool": "chat", "args": {"question": utterance.strip()}, "confirm_text": "",
+                    "needs_confirm": False}
     return {"kind": "say", "tool": "speak", "args": {"text": utterance.strip()},
             "confirm_text": f"Say “{utterance.strip()}” out loud?", "needs_confirm": True}
 
@@ -309,6 +317,8 @@ async def route(utterance: str) -> dict:
             args = c.get("args") or {}
             if tool == "speak":
                 args.setdefault("text", utterance)
+            if tool == "chat":
+                args.setdefault("question", utterance)
             if tool == "appeal" and args.get("action") not in ("draft", "review", "revise", "file"):
                 args["action"] = "draft"
             return {
