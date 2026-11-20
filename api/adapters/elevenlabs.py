@@ -20,8 +20,14 @@ Who = Literal["user", "milo"]
 
 BASE = "https://api.elevenlabs.io/v1"
 DEFAULT_VOICES = {
-    "user": "DODLEQrClDo8wCz460ld",  # Lauren — Friendly, Comforting and Soft
-    "milo": "cgSgspJ2msm6clMCkdW9",  # Jessica — Playful, Bright, Warm
+    "user": "DODLEQrClDo8wCz460ld",  # Lauren — friendly, comforting, soft (speaks FOR the person)
+    "milo": "EXAVITQu4vr4xnSDxMaL",  # Sarah — soft, reassuring (Milo's own voice)
+}
+
+# Soft & caring delivery: steady (high stability), gentle (low style), a little slower.
+VOICE_SETTINGS = {
+    "milo": {"stability": 0.7, "similarity_boost": 0.8, "style": 0.08, "use_speaker_boost": True, "speed": 0.9},
+    "user": {"stability": 0.6, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True, "speed": 0.95},
 }
 
 
@@ -30,7 +36,8 @@ def status() -> str:
 
 
 def model() -> str:
-    return os.getenv("ELEVENLABS_MODEL", "eleven_v3")
+    # multilingual_v2 honours voice_settings (incl. speed) for a calm, even delivery
+    return os.getenv("ELEVENLABS_MODEL", "eleven_multilingual_v2")
 
 
 def voice(who: Who) -> str:
@@ -45,7 +52,7 @@ async def open_stream(text: str, who: Who) -> tuple[httpx.AsyncClient, httpx.Res
         f"{BASE}/text-to-speech/{voice(who)}/stream",
         params={"output_format": "mp3_44100_128"},
         headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"], "Content-Type": "application/json"},
-        json={"text": text, "model_id": model()},
+        json={"text": text, "model_id": model(), "voice_settings": VOICE_SETTINGS.get(who, VOICE_SETTINGS["milo"])},
     )
     resp = await client.send(req, stream=True)
     if resp.status_code != 200:

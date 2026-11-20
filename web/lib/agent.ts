@@ -6,6 +6,7 @@ import { api, uid } from "./api";
 import { track } from "./analytics";
 import { looksLikeLetters, predictLocal } from "./phrasesLocal";
 import { speak } from "./speech/tts";
+import { chime, notify, soften } from "./sounds";
 import { PendingConfirm, useApp } from "./store";
 import type { InputMode, ModelCall, RouteResult, Suggestion, ToolName } from "./types";
 
@@ -45,6 +46,7 @@ export function say(text: string, mode: InputMode = lastInputMode) {
 }
 
 function miloMessage(text: string, extra: Partial<{ link: string | null; receiptId: string }> = {}) {
+  notify();
   st().addMessage({
     id: uid("m"),
     role: "milo",
@@ -259,6 +261,7 @@ export async function confirmYes(mode: InputMode) {
   st().setConfirm(null);
   milo.set("waiting", false);
   milo.react("happy");
+  chime();
   await act(p, true, mode);
 }
 
@@ -267,6 +270,7 @@ export async function confirmNo(mode: InputMode) {
   if (!p) return;
   st().setConfirm(null);
   milo.set("waiting", false);
+  soften();
   await act(p, false, mode);
 }
 

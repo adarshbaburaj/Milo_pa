@@ -7,6 +7,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/store";
+import { chime, tick } from "@/lib/sounds";
 
 const TARGET = "[data-head-target]";
 
@@ -61,6 +62,7 @@ export function Scanner({ force = false }: { force?: boolean }) {
       const at = cur.current ? items.indexOf(cur.current) : -1;
       idx.current = (at + 1) % items.length;
       highlight(items[idx.current]);
+      tick();
     };
     let timer = setInterval(step, scanMs);
     const restart = () => {
@@ -70,6 +72,7 @@ export function Scanner({ force = false }: { force?: boolean }) {
     const pick = () => {
       const el = cur.current;
       if (!el || !document.contains(el)) return step();
+      chime();
       el.click();
       // after a pick the screen usually changes — start again from the top of the new scope
       setTimeout(() => {
@@ -152,6 +155,7 @@ export function HoverDwell({ force = false }: { force?: boolean }) {
       }
       if (arc.current) arc.current.style.strokeDashoffset = String(C * (1 - p));
       if (target && p >= 1) {
+        chime();
         target.click();
         cooldown = now + 900;
         start = now + 900;

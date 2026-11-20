@@ -29,6 +29,7 @@ export interface Settings {
   scanMs: number;
   hoverDwell: boolean; // pointer / eye-gaze hover selects after dwellMs
   readEverything: boolean; // speak replies in every mode, incl. typing
+  uiSounds: boolean; // soft chimes on choose / scan / new message
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -53,6 +54,7 @@ export const DEFAULT_SETTINGS: Settings = {
   scanMs: 1600,
   hoverDwell: false,
   readEverything: false,
+  uiSounds: true,
 };
 
 function loadSettings(): Settings {

@@ -51,6 +51,15 @@ export function AppShell({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated]);
 
+  // gently say where you are after navigating (read-aloud users)
+  useEffect(() => {
+    const names: Record<string, string> = { "/": "Home", "/fit": "Chairs that fit", "/appeal": "My appeal", "/shop": "Shop", "/receipts": "Receipts", "/settings": "Settings", "/listen": "Listen to someone" };
+    const key = Object.keys(names).find((k) => (k === "/" ? path === "/" : path.startsWith(k)));
+    if (!key || !hydrated) return;
+    useApp.getState().announce(names[key]);
+    if (useApp.getState().settings.readEverything) import("@/lib/speech/tts").then(({ speak }) => speak(names[key]));
+  }, [path, hydrated]);
+
   // settings → html classes
   useEffect(() => {
     const h = document.documentElement;

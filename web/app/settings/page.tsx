@@ -72,6 +72,7 @@ export default function SettingsPage() {
         </PropertyRow>
         <PropertyRow label="Captions"><Switch label="Captions" checked={s.captions} onChange={(b) => set({ captions: b })} /></PropertyRow>
         <PropertyRow label="Visual alerts"><Switch label="Visual alerts" checked={s.visualAlerts} onChange={(b) => set({ visualAlerts: b })} /></PropertyRow>
+        <PropertyRow label="Soft sounds"><Switch label="Soft sounds" checked={s.uiSounds} onChange={(b) => set({ uiSounds: b })} /></PropertyRow>
         <PropertyRow label="Read everything aloud"><Switch label="Read everything aloud" checked={s.readEverything} onChange={(b) => set({ readEverything: b })} /></PropertyRow>
         <PropertyRow label="Simple mode"><Switch label="Simple mode" checked={s.simpleMode} onChange={(b) => set({ simpleMode: b })} /></PropertyRow>
         <PropertyRow label="Switch scanning"><Switch label="Switch scanning" checked={s.scanning} onChange={(b) => set({ scanning: b })} /></PropertyRow>

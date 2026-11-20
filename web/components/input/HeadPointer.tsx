@@ -4,6 +4,7 @@ import { milo } from "@/components/milo/useMilo";
 import { Gestures } from "@/lib/head/gestures";
 import { faceTracker, HeadFrame } from "@/lib/head/faceTracker";
 import { useApp } from "@/lib/store";
+import { chime, soften } from "@/lib/sounds";
 
 const RING = 40;
 const R = RING / 2 - 3;
@@ -58,6 +59,7 @@ export function HeadPointer({
     const select = (el: HTMLElement, t: number) => {
       cooldownUntil = t + 400;
       dwellStart = t + 400;
+      chime();
       el.click();
     };
 
@@ -99,6 +101,7 @@ export function HeadPointer({
         else handlers.current.onNodNoTarget?.();
       } else if (gesture === "shake") {
         cooldownUntil = f.t + 600;
+        soften();
         handlers.current.onShake?.();
       }
     });
